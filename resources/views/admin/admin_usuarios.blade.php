@@ -79,7 +79,7 @@
         </div>
     </form>
 
-    @empty([])
+    @empty([1])
         <div class="alert alert-info" role="alert">
             No se encontraron usuarios que coincidan con los criterios de búsqueda.
         </div>
