@@ -33,3 +33,15 @@ Route::get('/admin-registrar-psicologo', function () {
 Route::get('/admin-registrar-paciente', function () {
     return view('admin.admin_registrar_paciente');
 })->name('admin_registrar_paciente');
+
+Route::get('/admin-registrar-paciente', function () {
+    return view('admin.admin_registrar_paciente');
+})->name('admin_registrar_paciente');
+
+Route::get('/admin-detalle-usuario-psicologo/{id}', function ($id) {
+    return view('admin.admin_detalle_usuario_psicologo');
+})->name('admin_detalle_usuario_psicologo')->where('id', '[0-9]+');
+
+Route::get('/admin-detalle-usuario-paciente', function () {
+    return view('admin.admin_detalle_usuario_paciente');
+})->name('admin_detalle_usuario_paciente');
