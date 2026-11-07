@@ -397,7 +397,7 @@ a {
   box-shadow: 0 0 0 3px rgba(153, 27, 27, 0.12);
 }
 
-*/ .form-check-input:checked,
+.form-check-input:checked,
 .form-check-input-custom:checked {
   background-color: var(--main-color) !important;
   border-color: var(--main-color) !important;

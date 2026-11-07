@@ -27,8 +27,10 @@
                 <i class="bi bi-plus-lg text-white"></i> Registrar Usuario
             </button>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" target="_self" href="#" title="Registrar Psicólogo">Psicólogo</a></li>
-                <li><a class="dropdown-item" target="_self" href="#" title="Registrar Paciente">Paciente</a></li>
+                <li><a class="dropdown-item" target="_self" href="{{ route('admin_registrar_psicologo') }}"
+                        title="Registrar Psicólogo">Psicólogo</a></li>
+                <li><a class="dropdown-item" target="_self" href="{{ route('admin_registrar_paciente') }}"
+                        title="Registrar Paciente">Paciente</a></li>
             </ul>
         </div>
     </div>

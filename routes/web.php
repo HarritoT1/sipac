@@ -29,3 +29,7 @@ Route::get('/admin-usuarios', function () {
 Route::get('/admin-registrar-psicologo', function () {
     return view('admin.admin_registrar_psicologo');
 })->name('admin_registrar_psicologo');
+
+Route::get('/admin-registrar-paciente', function () {
+    return view('admin.admin_registrar_paciente');
+})->name('admin_registrar_paciente');
