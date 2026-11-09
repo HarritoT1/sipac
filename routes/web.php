@@ -42,6 +42,6 @@ Route::get('/admin-detalle-usuario-psicologo/{id}', function ($id) {
     return view('admin.admin_detalle_usuario_psicologo');
 })->name('admin_detalle_usuario_psicologo')->where('id', '[0-9]+');
 
-Route::get('/admin-detalle-usuario-paciente', function () {
+Route::get('/admin-detalle-usuario-paciente/{id}', function ($id) {
     return view('admin.admin_detalle_usuario_paciente');
-})->name('admin_detalle_usuario_paciente');
+})->name('admin_detalle_usuario_paciente')->where('id', '[0-9]+');

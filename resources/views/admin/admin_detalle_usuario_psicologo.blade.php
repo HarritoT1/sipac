@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <div class="row gx-4 mb-5">
+    <div class="row gx-4 mb-5 align-items-start">
         <div class="col-xl-4 col-lg-5 mb-4 mb-lg-0">
             <div class="custom-card p-4 text-center h-100 d-flex flex-column">
                 <div class="mt-2">
@@ -52,7 +52,7 @@
                         <i class="bi bi-pencil-square me-2"></i>Editar Perfil
                     </a>
                     <form id="destroy" method="POST" enctype="application/x-www-form-urlencoded" action=""
-                        type="button" class="needs-validation" novalidate autocomplete="off">
+                        class="needs-validation" novalidate autocomplete="off">
                         @csrf
                         @method('DELETE')
 

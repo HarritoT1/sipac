@@ -750,26 +750,6 @@ a {
   font-size: 3.2rem;
 }
 
-.badge-custom {
-  padding: 0.35rem 0.85rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  display: inline-block;
-}
-
-.badge-role {
-  background-color: #eff6ff;
-  color: #2563eb;
-}
-
-.badge-status,
-.badge-status-active {
-  background-color: #ecfdf5;
-  color: #10b981;
-}
-
 .stats-container {
   display: flex;
   align-items: center;
@@ -906,25 +886,6 @@ a {
   font-weight: 600;
 }
 
-.badge-pill-status {
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 0.25rem 0.65rem;
-  border-radius: 20px;
-  display: inline-block;
-}
-
-.badge-pill-completed {
-  background-color: #ecfdf5;
-  color: #10b981;
-}
-
-.badge-pill-scheduled {
-  background-color: #fef3c7;
-  color: #d97706;
-}
-
-
 .welcome-banner {
   background-color: var(--main-color);
   color: #ffffff;
@@ -960,7 +921,7 @@ a {
   vertical-align: middle;
   font-size: 0.875rem;
   color: #30353d;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #dadadb;
   padding: 0.85rem 0.75rem;
 }
 
@@ -979,6 +940,26 @@ a {
   flex-shrink: 0;
 }
 
+.badge-pill-status {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
+.badge-pill-completed {
+  background-color: #ecfdf5;
+  color: #10b981;
+}
+
+.badge-pill-scheduled {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
 .status-badge {
   padding: 0.35rem 0.85rem;
   font-size: 0.75rem;
@@ -987,6 +968,28 @@ a {
   display: inline-block;
   width: 100%;
   text-align: center;
+}
+
+.badge-custom {
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
+.badge-role {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+
+.badge-status,
+.badge-status-active {
+  background-color: #ecfdf5;
+  color: #10b981;
 }
 
 .badge-activo,
