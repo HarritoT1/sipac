@@ -1,3 +1,5 @@
+const contactsDeleted = [];
+
 function asigListenersOfSubmitForms() {
     'use strict'
 
@@ -183,11 +185,12 @@ const addEmergencyContact = () => {
 const removeEmergencyContact = (id) => {
     if (confirm("¿Estás seguro de que deseas eliminar este contacto de emergencia?")) {
         const contactForm = document.getElementById(`emergencyContactForm_${id}`);
+        if (contactForm.classList.contains('existing')) contactsDeleted.push(id);
         contactForm.remove();
     }
 };
 
-function patientCreateFormSubmit() {
+function patientCreateOrUpdateFormSubmit() {
     const forms = document.querySelectorAll('.needs-validation')
 
     // Todo form deben pasar la validación de Bootstrap, si no, no se envía el formulario.
@@ -207,7 +210,8 @@ function patientCreateFormSubmit() {
         return;
     }
 
-    const form = document.getElementById('registerForm');
+    const form = document.getElementById('registerForm') ?? document.getElementById('actForm');
+    const isCreateForm = form.id === 'registerForm';
     const mainForm = new FormData(form);
 
     const emergencyContactForms = document.querySelectorAll('#emergencyContactsSection > form');
@@ -221,6 +225,7 @@ function patientCreateFormSubmit() {
         const contactFormData = new FormData(contactForm);
         const id = contactForm.id.split('_')[1];
         return {
+            id: id,
             name: contactFormData.get(`nameEmergencyContact_${id}`),
             relationship: contactFormData.get(`relationshipEmergencyContact_${id}`),
             email: contactFormData.get(`emailEmergencyContact_${id}`),
@@ -232,14 +237,17 @@ function patientCreateFormSubmit() {
 
     mainForm.append('emergency_contacts', JSON.stringify(emergencyContacts));
 
-    submitFormData(mainForm, '', 'POST');
+    if (isCreateForm) submitFormData(mainForm, '', 'POST');
+    else submitFormData(mainForm, '', 'PUT');
+
+    return;
 }
 
 function submitFormData(formData, action, method = 'POST') {
 
     const form = document.createElement('form');
 
-    form.method = method;
+    form.method = 'POST';
     form.action = action;
     form.enctype = 'multipart/form-data';
     form.style.display = 'none';
@@ -274,7 +282,43 @@ function submitFormData(formData, action, method = 'POST') {
         form.appendChild(input);
     }
 
+    if (method === 'PUT' && contactsDeleted.length > 0) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'contacts_deleted';
+        input.value = JSON.stringify(contactsDeleted);
+        form.appendChild(input);
+    }
+
     document.body.appendChild(form);
 
     form.submit();
+
+    return;
 }
+
+const deleteAvatar = (userId) => {
+    if (!confirm("¿Estás seguro de que deseas eliminar la foto de perfil?")) return;
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/users/${userId}/avatar`;
+    form.enctype = 'application/x-www-form-urlencoded; charset=UTF-8a';
+    form.style.display = 'none';
+
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'DELETE';
+    form.appendChild(methodInput);
+
+    const tokenInput = document.createElement('input');
+    tokenInput.type = 'hidden';
+    tokenInput.name = '_token';
+    tokenInput.value = document.querySelector('meta[name="csrf-token"]')?.content;
+    form.appendChild(tokenInput);
+
+    document.body.appendChild(form);
+
+    form.submit();
+};

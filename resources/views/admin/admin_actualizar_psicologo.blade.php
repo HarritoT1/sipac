@@ -1,186 +1,194 @@
-<!doctype html>
-<html lang="es" data-bs-theme="light">
+@extends('admin.admin_layout')
+@section('content')
+    <script>
+        document.querySelector('a[title="Usuarios"]').classList.add('active');
+    </script>
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Actualizar Psicólogo SIPAC - Tláhuac" />
-  <title>Actualizar Psicólogo · SIPAC</title>
-
-
-  <script src="../js/color-modes.js"></script>
-  <link href="../css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
-  <link href="../css/globalstyles.css" rel="stylesheet" />
-</head>
-
-<body>
-  
-  <header class="navbar navbar-light bg-white d-md-none border-bottom p-3">
-    <a href="inicio.html" class="brand-logo p-0 m-0">
-      <i class="bi bi-heart-pulse-fill"></i> SIPAC
-    </a>
-    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-label="Abrir menú">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-  </header>
-
-  <div class="d-flex">
-   
-    <nav id="sidebarMenu" class="sidebar offcanvas-md offcanvas-start position-fixed bg-white" style="background-color: #ffffff !important;" tabindex="-1">
-      <div class="offcanvas-header d-md-none pb-0">
-        <a href="inicio.html" class="brand-logo p-0 m-0">
-          <i class="bi bi-heart-pulse-fill"></i> SIPAC
-        </a>
-        <button type="button" class="btn-close shadow-none" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Cerrar"></button>
-      </div>
-
-   
-      <a href="inicio.html" class="brand-logo d-none d-md-flex">
-        <i class="bi bi-heart-pulse-fill"></i> SIPAC
-      </a>
-
-      <!-- Lista de Navegación -->
-      <ul class="nav flex-column mb-auto w-100">
-        <li class="nav-item">
-          <a class="nav-link" href="inicio.html">
-            <i class="bi bi-house"></i> Inicio
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="usuarios.html">
-            <i class="bi bi-people"></i> Usuarios
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="registrar-psicologo.html">
-            <i class="bi bi-person-plus"></i> Registrar Psicólogo
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="registrar-paciente.html">
-            <i class="bi bi-person-add"></i> Registrar Paciente
-          </a>
-        </li>
-      </ul>
-
-      <!-- Botón Cerrar Sesión -->
-      <div class="sidebar-footer w-100">
-        <a href="index.html" class="logout-link">
-          <i class="bi bi-box-arrow-left"></i> Cerrar Sesión
-        </a>
-      </div>
-    </nav>
-
-   
-    <main class="main-content-layout w-100 px-3 px-md-5 py-3">
-      
-  
-      <div class="top-header">
-        <h1 class="h4 mb-0 fw-bold text-dark">Actualizar Psicólogo</h1>
+    <div class="top-header">
+        <h1 class="h3 mb-0 fw-bold text-dark">Actualizar Psicólogo</h1>
         <div class="profile-section">
-          <div class="profile-badge-avatar">AD</div>
-          <div class="d-flex flex-column lh-1">
-            <span class="fw-bold text-dark" style="font-size: 0.95rem;">Administrador</span>
-            <span class="text-muted" style="font-size: 0.8rem;">Perfil</span>
-          </div>
+            <img src="https://ui-avatars.com/api/?name=Admin&background=random" alt="Avatar Administrador"
+                class="profile-avatar shadow-sm image-responsive" />
+            <div class="d-flex flex-column lh-1">
+                <span class="fw-bold" style="font-size: 0.9rem;">Administrador</span>
+                <span class="text-secondary" style="font-size: 0.8rem;">Perfil</span>
+            </div>
         </div>
-      </div>
+    </div>
 
-      <!-- Tarjeta del Formulario -->
-      <div class="form-card p-4 p-md-5 mx-auto">
-        <h2 class="form-card-title">Información del Profesional</h2>
-        <p class="form-card-subtitle">Actualiza los campos de interés del psicólogo en SIPAC.</p>
-
-        <!-- Edición de Avatar -->
-        <div class="avatar-upload-container">
-          <div class="avatar-placeholder-circle">
-            <i class="bi bi-person"></i>
-          </div>
-          <div class="avatar-actions-group">
-            <button type="button" class="btn-avatar-change">Cambiar Avatar</button>
-            <p class="avatar-format-hint">Formatos aceptados: PNG, JPG. Máximo 2MB.</p>
-            <button type="button" class="btn-avatar-delete">Eliminar Avatar</button>
-          </div>
+    <div class="form-card-full p-4 p-md-5 mb-5">
+        <div class="mb-4">
+            <h2 class="h5 fw-bold text-dark mb-1">Información del Profesional</h2>
+            <p class="text-secondary small mb-0">Actualiza los campos de interés del psicólogo en
+                SIPAC.</p>
         </div>
 
-        <form>
-          <div class="row g-3">
-            
-            <div class="col-md-6">
-              <label class="custom-label">Nombre y apellidos</label>
-              <input type="text" class="form-control-custom" value="Doc. Juan Manuel Solís" />
-            </div>
-            <div class="col-md-6">
-              <label class="custom-label">Nombre de usuario (recuerda guardarlo)</label>
-              <input type="text" class="form-control-custom" value="JuanMaSolis" />
-            </div>
-
-            <div class="col-md-6">
-              <label class="custom-label">Especialidad</label>
-              <div class="specialty-badge-box">
-                <div>
-                  <span class="specialty-tag">✕ Ansiedad</span>
-                  <span class="specialty-tag">✕ Depresión</span>
+        <form id="actForm" action="" method="post" enctype="multipart/form-data" novalidate autocomplete="off"
+            class="needs-validation">
+            @csrf
+            @method('PUT')
+            <div class="profile-section gap-4 mb-4 pb-2">
+                <img id="avatar_preview" src="{{ asset('img/default-avatar.png') }}" alt="Avatar Psicólogo"
+                    class="profile-avatar shadow-sm image-responsive mx-0" />
+                <div class="d-flex flex-column gap-2 align-items-start">
+                    <input onchange="previewImage(event, 'avatar_preview')" type="file"
+                        class="form-control form-control-sm btn-outline-custom" accept="image/png, image/jpeg"
+                        name="avatar_url" value="" />
+                    <span class="text-secondary small" style="font-size: 0.75rem;">Formatos aceptados: PNG, JPG. Máximo
+                        2MB.</span>
+                    <button type="button" onclick="deleteAvatar('8')" class="btn-avatar-delete">Eliminar
+                        Avatar</button>
                 </div>
-                <i class="bi bi-chevron-down text-muted" style="font-size: 0.85rem;"></i>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <label class="custom-label">Activo en el sistema</label>
-              <select class="form-select-custom">
-                <option value="si" selected>Sí</option>
-                <option value="no">No</option>
-              </select>
             </div>
 
-            <div class="col-md-6">
-              <label class="custom-label">Teléfono</label>
-              <input type="text" class="form-control-custom" value="558837468" />
-            </div>
-            <div class="col-md-6">
-              <label class="custom-label">Número de Licencia (cédula profesional)</label>
-              <input type="text" class="form-control-custom" value="L-9823415-COL" />
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <label for="full_name" class="custom-label">Nombre y apellidos</label>
+                    <input id="full_name" type="text" class="form-control form-control-custom"
+                        placeholder="Ingrese el nombre completo" name="full_name" required maxlength="255" value="" />
+                    <div class="invalid-feedback">
+                        Ingresa un nombre completo válido.
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="name" class="custom-label">Nombre de usuario (recuerda guardarlo)</label>
+                    <input id="name" type="text" class="form-control form-control-custom"
+                        placeholder="Usuario para inicio de sesión" name="name" required maxlength="255"
+                        value="" />
+                    <div class="invalid-feedback">
+                        Ingresa un nombre de usuario válido.
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <label class="custom-label">Especialidad</label>
+                    <select class="form-control form-select text-secondary" id="specialty"
+                        data-placeholder="Selecciona minimo una opción" name="specialty[]" required multiple>
+                        <option value="ansiedad" @selected('ansiedad' == 'ansiedad')>ansiedad</option>
+                        <option value="depresión" @selected('depresión' == 'depresión')>depresión</option>
+                        <option value="terapia de pareja" @selected('terapia de pareja' == 'terapia de pareja')>terapia de pareja</option>
+                        <option value="adolescentes" @selected('adolescentes' == 'adolescentes')>adolescentes</option>
+                        <option value="terapia familiar" @selected('terapia familiar' == 'terapia familiar')>terapia familiar</option>
+                        <option value="duelo" @selected('duelo' == 'duelo')>duelo</option>
+                        <option value="adicciones" @selected('adicciones' == 'adicciones')>adicciones</option>
+                    </select>
+
+                    <div class="invalid-feedback">
+                        Selecciona al menos una especialidad.
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="is_active" class="custom-label">Activo en el sistema</label>
+                    <select class="form-control form-select text-secondary" id="is_active" name="is_active" required>
+                        <option value="true" @selected(true)>Si</option>
+                        <option value="false" @selected(false)>No</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Selecciona si el psicólogo está activo en el sistema.
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="phone_number" class="custom-label">Teléfono</label>
+                    <input id="phone_number" type="tel" class="form-control form-control-custom"
+                        placeholder="10 dígitos numéricos" name="phone_number" required maxlength="20" value="" />
+                    <div class="invalid-feedback">
+                        Ingresa un número de teléfono válido.
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="professional_license" class="custom-label">Número de Licencia (cédula profesional)</label>
+                    <input id="professional_license" type="text" class="form-control form-control-custom"
+                        placeholder="Ej. L-9923415-COL" name="professional_license" required maxlength="15"
+                        value="" />
+                    <div class="invalid-feedback">
+                        Ingresa un número de licencia válido.
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="curp" class="custom-label">CURP</label>
+                    <input id="curp" type="text" class="form-control form-control-custom"
+                        placeholder="Clave Única de Registro de Población" name="curp" required maxlength="18"
+                        minlength="18" value="" />
+                    <div class="invalid-feedback">
+                        Ingresa un CURP válido.
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="home_address" class="custom-label">Domicilio</label>
+                    <input id="home_address" type="text" class="form-control form-control-custom"
+                        placeholder="Calle, número, colonia, alcaldía o municipio" name="home_address" required
+                        value="" />
+                    <div class="invalid-feedback">
+                        Ingresa un domicilio válido.
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="years_experience" class="custom-label">Años de experiencia</label>
+                    <input id="years_experience" type="number" class="form-control form-control-custom" placeholder="0"
+                        step="1" name="years_experience" value="" min="0" max="50" required />
+                    <div class="invalid-feedback">
+                        Ingresa un número válido de años de experiencia.
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="consultation_fee" class="custom-label">Tarifa de consulta (MXN)</label>
+                    <input id="consultation_fee" type="number" step="0.01" class="form-control form-control-custom"
+                        placeholder="250.00" name="consultation_fee" value="" min="0" max="9999.99" />
+                    <div class="invalid-feedback">
+                        Ingresa una tarifa válida.
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label for="professional_bio" class="custom-label">Agrega una descripción de tu trayectoria
+                        profesional</label>
+                    <textarea id="professional_bio" class="form-control form-control-custom" rows="3"
+                        placeholder="Resumen curricular o enfoque terapéutico..." name="professional_bio">
+                    </textarea>
+                    <div class="invalid-feedback">
+                        Ingresa una descripción válida.
+                    </div>
+                </div>
             </div>
 
-            <div class="col-md-6">
-              <label class="custom-label">CURP</label>
-              <input type="text" class="form-control-custom" value="CATH041E031215HGRRR" />
+            <!-- Botones de Acción -->
+            <div class="form-actions border-top border-secondary-subtle pt-4 mt-5">
+                <a href="{{ route('admin_detalle_usuario_psicologo', ['id' => 8]) }}" target="_self" title="Cancelar"
+                    class="btn btn-cancel">Cancelar</a>
+                <button id="submit" type="submit" class="btn btn-custom-red px-4 py-2 rounded-3 shadow-sm">Guardar
+                    cambios</button>
             </div>
-            <div class="col-md-6">
-              <label class="custom-label">Domicilio</label>
-              <input type="text" class="form-control-custom" value="Calle Bugambilias. Colonia Lomas. CDMX." />
-            </div>
-
-            <div class="col-md-6">
-              <label class="custom-label">Años de experiencia</label>
-              <input type="number" class="form-control-custom" value="1" />
-            </div>
-            <div class="col-md-6">
-              <label class="custom-label">Tarifa de consulta</label>
-              <input type="text" class="form-control-custom" value="250.00" />
-            </div>
-
-            <div class="col-12">
-              <label class="custom-label">Agrega una descripción de tu trayectoria profesional</label>
-              <input type="text" class="form-control-custom" value="Llevo una trayectoria..." />
-            </div>
-
-          </div>
-
-          <!-- Acciones de guardado -->
-          <div class="form-actions">
-            <a href="usuarios.html" class="btn btn-cancel">Cancelar</a>
-            <button type="submit" class="btn btn-save">Guardar cambios</button>
-          </div>
         </form>
 
-      </div>
+        @if ($errors->any())
+            <div class="alert alert-danger mt-3" role="alert">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+    </div>
 
-    </main>
-  </div>
-
-  <script src="../js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            $(document).ready(function() {
+                $('#specialty').select2({
+                    theme: 'bootstrap-5',
+                    width: '100%',
+                    placeholder: 'Selecciona minimo una opción',
+                    allowClear: true
+                });
+            });
+        });
+    </script>
+@endsection

@@ -48,7 +48,8 @@
 
                 <!-- Botones de Acción -->
                 <div class="mt-auto px-2 pb-2">
-                    <a href="#" title="Editar Perfil" target="_self" class="btn btn-outline-edit mb-3">
+                    <a href="{{ route('admin_actualizar_psicologo', ['id' => 8]) }}" title="Editar Perfil" target="_self"
+                        class="btn btn-outline-edit mb-3">
                         <i class="bi bi-pencil-square me-2"></i>Editar Perfil
                     </a>
                     <form id="destroy" method="POST" enctype="application/x-www-form-urlencoded" action=""

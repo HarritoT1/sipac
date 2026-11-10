@@ -164,7 +164,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label for="consultation_fee" class="custom-label">Tarifa de consulta</label>
+                    <label for="consultation_fee" class="custom-label">Tarifa de consulta (MXN)</label>
                     <input id="consultation_fee" type="number" step="0.01" class="form-control form-control-custom"
                         placeholder="250.00" name="consultation_fee" value="{{ old('consultation_fee', '') }}"
                         min="0" max="9999.99" />
@@ -190,6 +190,16 @@
                     profesional</button>
             </div>
         </form>
+
+        @if ($errors->any())
+            <div class="alert alert-danger mt-3" role="alert">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
     </div>
 
     <script type="text/javascript">

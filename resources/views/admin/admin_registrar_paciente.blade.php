@@ -162,11 +162,21 @@
 
         <!-- Botones de Acción -->
         <div class="form-actions border-top border-secondary-subtle pt-4 mt-0">
-            <button onclick="patientCreateFormSubmit()" id="submit" type="submit"
+            <button onclick="patientCreateOrUpdateFormSubmit()" id="submit" type="submit"
                 class="btn btn-custom-red px-4 py-2 rounded-3 shadow-sm" value="Registrar Paciente">
                 Registrar Paciente
             </button>
         </div>
+
+        @if ($errors->any())
+            <div class="alert alert-danger mt-3" role="alert">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
     </div>
 
     <script type="text/javascript">

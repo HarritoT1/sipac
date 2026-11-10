@@ -81,6 +81,22 @@
         </div>
     </form>
 
+    @if (session('message'))
+        <div class="alert alert-success mt-3" role="alert">
+            {{ session('message') }}
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger mt-3" role="alert">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     @empty([1])
         <div class="alert alert-info" role="alert">
             No se encontraron usuarios que coincidan con los criterios de búsqueda.
@@ -109,11 +125,17 @@
                             <td class="text-secondary">carlos@psicogestion.com</td>
                             <td class="text-center"><span class="status-badge badge-psicologo">Psicólogo</span></td>
                             <td class="text-center"><span class="status-badge badge-activo">Activo</span></td>
-                            <td class="text-center row row-cols-1  row-cols-md-2 justify-content-center g-1">
-                                <a class="btn btn-sm btn-light text-secondary" title="Ver detalle" href="#"
+                            <td class="text-center row row-cols-1 row-cols-md-2 justify-content-center g-1">
+                                <a class="btn btn-sm btn-light text-secondary" title="Ver detalle"
+                                    href="{{ 'psicologo' === 'psicologo' ? route('admin_detalle_usuario_psicologo', 8) : route('admin_detalle_usuario_paciente', 8) }}"
                                     target="_self"><i class="bi bi-eye-fill"></i></a>
-                                <a class="btn btn-sm btn-light text-danger" title="Eliminar" href="#"
-                                    target="_self"><i class="bi bi-trash-fill"></i></a>
+                                <form method="POST" action="" enctype="application/x-www-form-urlencoded"
+                                    class="needs-validation" novalidate autocomplete="off">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-sm btn-light text-danger w-100" title="Eliminar" type="submit"><i
+                                            class="bi bi-trash-fill"></i></button>
+                                </form>
                             </td>
                         </tr>
                         <tr>
@@ -126,10 +148,16 @@
                             <td class="text-center"><span class="status-badge badge-paciente">Paciente</span></td>
                             <td class="text-center"><span class="status-badge badge-activo">Activo</span></td>
                             <td class="text-center row row-cols-1  row-cols-md-2 justify-content-center g-1">
-                                <a class="btn btn-sm btn-light text-secondary" title="Ver detalle" href="#"
+                                <a class="btn btn-sm btn-light text-secondary" title="Ver detalle"
+                                    href="{{ 'psicologo' === 'psicologo' ? route('admin_detalle_usuario_psicologo', 8) : route('admin_detalle_usuario_paciente', 8) }}"
                                     target="_self"><i class="bi bi-eye-fill"></i></a>
-                                <a class="btn btn-sm btn-light text-danger" title="Eliminar" href="#"
-                                    target="_self"><i class="bi bi-trash-fill"></i></a>
+                                <form method="POST" action="" enctype="application/x-www-form-urlencoded"
+                                    class="needs-validation" novalidate autocomplete="off">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-sm btn-light text-danger w-100" title="Eliminar" type="submit"><i
+                                            class="bi bi-trash-fill"></i></button>
+                                </form>
                             </td>
                         </tr>
                         <tr>
@@ -142,10 +170,16 @@
                             <td class="text-center"><span class="status-badge badge-psicologo">Psicólogo</span></td>
                             <td class="text-center"><span class="status-badge badge-inactivo">Inactivo</span></td>
                             <td class="text-center row row-cols-1  row-cols-md-2 justify-content-center g-1">
-                                <a class="btn btn-sm btn-light text-secondary" title="Ver detalle" href="#"
+                                <a class="btn btn-sm btn-light text-secondary" title="Ver detalle"
+                                    href="{{ 'psicologo' === 'psicologo' ? route('admin_detalle_usuario_psicologo', 8) : route('admin_detalle_usuario_paciente', 8) }}"
                                     target="_self"><i class="bi bi-eye-fill"></i></a>
-                                <a class="btn btn-sm btn-light text-danger" title="Eliminar" href="#"
-                                    target="_self"><i class="bi bi-trash-fill"></i></a>
+                                <form method="POST" action="" enctype="application/x-www-form-urlencoded"
+                                    class="needs-validation" novalidate autocomplete="off">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-sm btn-light text-danger w-100" title="Eliminar" type="submit"><i
+                                            class="bi bi-trash-fill"></i></button>
+                                </form>
                             </td>
                         </tr>
                         <tr>
@@ -158,10 +192,16 @@
                             <td class="text-center"><span class="status-badge badge-paciente">Paciente</span></td>
                             <td class="text-center"><span class="status-badge badge-activo">Activo</span></td>
                             <td class="text-center row row-cols-1  row-cols-md-2 justify-content-center g-1">
-                                <a class="btn btn-sm btn-light text-secondary" title="Ver detalle" href="#"
+                                <a class="btn btn-sm btn-light text-secondary" title="Ver detalle"
+                                    href="{{ 'psicologo' === 'psicologo' ? route('admin_detalle_usuario_psicologo', 8) : route('admin_detalle_usuario_paciente', 8) }}"
                                     target="_self"><i class="bi bi-eye-fill"></i></a>
-                                <a class="btn btn-sm btn-light text-danger" title="Eliminar" href="#"
-                                    target="_self"><i class="bi bi-trash-fill"></i></a>
+                                <form method="POST" action="" enctype="application/x-www-form-urlencoded"
+                                    class="needs-validation" novalidate autocomplete="off">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-sm btn-light text-danger w-100" title="Eliminar" type="submit"><i
+                                            class="bi bi-trash-fill"></i></button>
+                                </form>
                             </td>
                         </tr>
                         <tr>
@@ -174,10 +214,16 @@
                             <td class="text-center"><span class="status-badge badge-paciente">Paciente</span></td>
                             <td class="text-center"><span class="status-badge badge-inactivo">Inactivo</span></td>
                             <td class="text-center row row-cols-1  row-cols-md-2 justify-content-center g-1">
-                                <a class="btn btn-sm btn-light text-secondary" title="Ver detalle" href="#"
+                                <a class="btn btn-sm btn-light text-secondary" title="Ver detalle"
+                                    href="{{ 'psicologo' === 'psicologo' ? route('admin_detalle_usuario_psicologo', 8) : route('admin_detalle_usuario_paciente', 8) }}"
                                     target="_self"><i class="bi bi-eye-fill"></i></a>
-                                <a class="btn btn-sm btn-light text-danger" title="Eliminar" href="#"
-                                    target="_self"><i class="bi bi-trash-fill"></i></a>
+                                <form method="POST" action="" enctype="application/x-www-form-urlencoded"
+                                    class="needs-validation" novalidate autocomplete="off">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-sm btn-light text-danger w-100" title="Eliminar" type="submit"><i
+                                            class="bi bi-trash-fill"></i></button>
+                                </form>
                             </td>
                         </tr>
                         <tr>
@@ -190,10 +236,16 @@
                             <td class="text-center"><span class="status-badge badge-paciente">Paciente</span></td>
                             <td class="text-center"><span class="status-badge badge-activo">Activo</span></td>
                             <td class="text-center row row-cols-1  row-cols-md-2 justify-content-center g-1">
-                                <a class="btn btn-sm btn-light text-secondary" title="Ver detalle" href="#"
+                                <a class="btn btn-sm btn-light text-secondary" title="Ver detalle"
+                                    href="{{ 'psicologo' === 'psicologo' ? route('admin_detalle_usuario_psicologo', 8) : route('admin_detalle_usuario_paciente', 8) }}"
                                     target="_self"><i class="bi bi-eye-fill"></i></a>
-                                <a class="btn btn-sm btn-light text-danger" title="Eliminar" href="#"
-                                    target="_self"><i class="bi bi-trash-fill"></i></a>
+                                <form method="POST" action="" enctype="application/x-www-form-urlencoded"
+                                    class="needs-validation" novalidate autocomplete="off">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-sm btn-light text-danger w-100" title="Eliminar" type="submit"><i
+                                            class="bi bi-trash-fill"></i></button>
+                                </form>
                             </td>
                         </tr>
                     </tbody>
@@ -213,5 +265,4 @@
             </div>
         </div>
     @endempty
-    <!-- Tabla de Usuarios -->
 @endsection

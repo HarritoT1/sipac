@@ -45,3 +45,11 @@ Route::get('/admin-detalle-usuario-psicologo/{id}', function ($id) {
 Route::get('/admin-detalle-usuario-paciente/{id}', function ($id) {
     return view('admin.admin_detalle_usuario_paciente');
 })->name('admin_detalle_usuario_paciente')->where('id', '[0-9]+');
+
+Route::get('/admin-actualizar-psicologo/{id}', function ($id) {
+    return view('admin.admin_actualizar_psicologo');
+})->name('admin_actualizar_psicologo')->where('id', '[0-9]+');
+
+Route::get('/admin-actualizar-paciente/{id}', function ($id) {
+    return view('admin.admin_actualizar_paciente');
+})->name('admin_actualizar_paciente')->where('id', '[0-9]+');
