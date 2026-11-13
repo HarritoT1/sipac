@@ -40,8 +40,8 @@
 
     <main class="text-center"
         style="background-color: #ffffff; padding: 2.5rem 2rem; border-radius: 16px; box-shadow: 0px 10px 30px rgba(0,0,0,0.3);">
-        <form id="login" action="" method="post" enctype="application/x-www-form-urlencoded"
-            class="needs-validation" novalidate autocomplete="off">
+        <form id="login" action="{{ route('auth.login') }}" method="post"
+            enctype="application/x-www-form-urlencoded" class="needs-validation" novalidate autocomplete="off">
             @csrf
 
             <img class="mb-2 image-responsive" src="{{ asset('img/logo.png') }}" alt="Logo SIPAC" width="48"
@@ -84,7 +84,8 @@
 
             <!-- Recordar sesión -->
             <div class="form-check text-start mb-4">
-                <input class="form-check-input" type="checkbox" value="remember-me" id="rememberMe" />
+                <input class="form-check-input" type="checkbox" name="remember_token" value="remember-me"
+                    id="rememberMe" />
                 <label class="form-check-label" for="rememberMe" style="color: #475569; font-size: 0.85rem;">
                     Acuérdate de mí
                 </label>

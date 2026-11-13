@@ -96,8 +96,9 @@
 
           <!-- Botón Cerrar Sesión -->
           <div class="sidebar-footer w-100">
-              <form id="logout" method="POST" enctype="application/x-www-form-urlencoded"
-                  class="logout-link needs-validation" novalidate autocomplete="off" action="">
+              <form id="logout" method="post" enctype="application/x-www-form-urlencoded"
+                  class="logout-link needs-validation" novalidate autocomplete="off"
+                  action="{{ route('auth.logout') }}">
                   @csrf
                   <button type="submit"
                       class='bg-transparent border-0 shadow-none w-100 d-flex align-items-center gap-3 text-2xl text-dark fw-semibold'>
