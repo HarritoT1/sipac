@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class PatientFactory extends Factory
 {
+    protected $model = Patient::class;
     /**
      * Define the model's default state.
      *
@@ -18,7 +19,14 @@ class PatientFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'birth_date' => fake()->date(),
+            'gender' => fake()->randomElement([
+                'masculino',
+                'femenino',
+                'no binario',
+                'prefiero no decir',
+            ]),
+            'user_id' => null,
         ];
     }
 }

@@ -16,9 +16,17 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
-        $this->truncateTables(['users']);
+        $this->truncateTables(['users', 'password_reset_tokens', 'psychologists', 'patients', 'emergency_contacts', 'appointments', 'session_records', 'psychologist_availabilities', 'notifications']);
         //$this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);
+        $this->call(PasswordResetTokenSeeder::class);
+        $this->call(PsychologistSeeder::class);
+        $this->call(PatientSeeder::class);
+        $this->call(EmergencyContactSeeder::class);
+        $this->call(AppointmentSeeder::class);
+        $this->call(SessionRecordSeeder::class);
+        $this->call(PsychologistAvailabilitySeeder::class);
+        $this->call(NotificationSeeder::class);
     }
 
     public function truncateTables(array $tables)

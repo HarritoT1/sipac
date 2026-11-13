@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\EmergencyContact;
 
 class EmergencyContactSeeder extends Seeder
 {
@@ -12,6 +13,6 @@ class EmergencyContactSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        EmergencyContact::factory(50)->create();
     }
 }
