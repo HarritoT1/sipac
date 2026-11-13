@@ -40,7 +40,7 @@ class UserFactory extends Factory
             'home_address' => $this->faker->address(),
             'avatar_url' => 'UploadFiles/default-avatar.png',
             'remember_token' => $this->faker->optional()->uuid(),
-            'rol_id' => Role::query()->inRandomOrder()->value('id'),
+            'rol_id' => Role::query()->whereNot('id', 1)->inRandomOrder()->value('id'),
         ];
     }
 
