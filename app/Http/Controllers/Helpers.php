@@ -23,7 +23,7 @@ class Helpers extends Controller
 
     public static function emptyToNull(string | null $cadena): string | null
     {
-        return trim($cadena) == '' ? null : $cadena;
+        return trim($cadena) === '' ? null : trim($cadena);
     }
 
     public static function truncarDecimales(float $numero): float
