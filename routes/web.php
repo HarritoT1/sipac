@@ -1,14 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', function () {
     return view('login');
 })->name('login');
 
-Route::post('/', [App\Http\Controllers\UserController::class, 'authenticate'])->name('auth.login');
+Route::post('/', [UserController::class, 'authenticate'])->name('auth.login');
 
-Route::post('/logout', [App\Http\Controllers\UserController::class, 'disauthenticate'])->name('auth.logout')->middleware('auth');
+Route::post('/logout', [UserController::class, 'disauthenticate'])->name('auth.logout')->middleware('auth');
 
 /**** GENERAL ****/
 
@@ -23,13 +25,9 @@ Route::get('/change-password', function () {
 /**** ADMIN ****/
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/admin-dashboard', function () {
-        return view('admin.admin_dashboard');
-    })->name('admin_dashboard');
+    Route::get('/admin-dashboard', [AdminController::class, 'index'])->name('admin_dashboard');
 
-    Route::get('/admin-usuarios', function () {
-        return view('admin.admin_usuarios');
-    })->name('admin_usuarios');
+    Route::get('/admin-usuarios', [UserController::class, 'findAll'])->name('admin_usuarios');
 
     Route::get('/admin-registrar-psicologo', function () {
         return view('admin.admin_registrar_psicologo');

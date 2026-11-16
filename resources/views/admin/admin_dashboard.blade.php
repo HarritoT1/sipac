@@ -17,6 +17,16 @@
         </div>
     </div>
 
+    @if ($errors->any())
+        <div class="alert alert-danger mt-3" role="alert">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <!-- Banner de bienvenida -->
     <div class="d-flex justify-content-between align-items-center welcome-banner shadow-sm">
         <h2 class="m-0 fw-bold fs-4">¡Bienvenido de nuevo, Administrador!</h2>
@@ -32,8 +42,9 @@
                 <div class="card-body p-1 d-flex justify-content-between align-items-center">
                     <div>
                         <p class="text-secondary fw-semibold mb-1" style="font-size: 0.9rem;">Usuarios Totales</p>
-                        <h3 class="fw-bold text-dark mb-1" style="font-size: 2rem;">1,248</h3>
-                        <small class="text-secondary" style="font-size: 0.75rem;">+ 12 usuarios nuevos este
+                        <h3 class="fw-bold text-dark mb-1" style="font-size: 2rem;">{{ $totalUsers }}</h3>
+                        <small class="text-secondary" style="font-size: 0.75rem;">+{{ $newMonthUsers }} usuarios nuevos
+                            este
                             mes</small>
                     </div>
 
@@ -48,8 +59,9 @@
                 <div class="card-body p-1 d-flex justify-content-between align-items-center">
                     <div>
                         <p class="text-secondary fw-semibold mb-1" style="font-size: 0.9rem;">Usuarios Activos</p>
-                        <h3 class="fw-bold text-dark mb-1" style="font-size: 2rem;">982</h3>
-                        <small class="text-secondary" style="font-size: 0.75rem;">92% de la base total</small>
+                        <h3 class="fw-bold text-dark mb-1" style="font-size: 2rem;">{{ $totalActiveUsers }}</h3>
+                        <small class="text-secondary" style="font-size: 0.75rem;">{{ $percentageActiveUsers }}% de la base
+                            total</small>
                     </div>
 
                     <i class="bi bi-person-check text-success fs-2 bg-gradient rounded-circle d-flex justify-content-center align-items-center shadow-sm"
@@ -63,8 +75,9 @@
                 <div class="card-body p-1 d-flex justify-content-between align-items-center">
                     <div>
                         <p class="text-secondary fw-semibold mb-1" style="font-size: 0.9rem;">Usuarios Inactivos</p>
-                        <h3 class="fw-bold text-dark mb-1" style="font-size: 2rem;">266</h3>
-                        <small class="text-secondary" style="font-size: 0.75rem;">18% de la base total</small>
+                        <h3 class="fw-bold text-dark mb-1" style="font-size: 2rem;">{{ $totalInactiveUsers }}</h3>
+                        <small class="text-secondary" style="font-size: 0.75rem;">{{ $percentageInactiveUsers }}% de la base
+                            total</small>
                     </div>
 
                     <i class="bi bi-person-dash fs-2 text-warning bg-gradient rounded-circle d-flex justify-content-center align-items-center shadow-sm"
@@ -80,79 +93,41 @@
             <div class="custom-card p-4 h-100">
                 <h5 class="table-title">Últimos 5 Usuarios creados</h5>
                 <div class="table-responsive">
-                    <table class="table custom-table table-borderless align-middle mb-0 table-light">
-                        <thead>
-                            <tr>
-                                <th scope="col" colspan="2">Avatar & Nombre</th>
-                                <th scope="col">Rol</th>
-                                <th scope="col">Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style="width: 40px;">
-                                    <img class="bg-secondary rounded-circle image-responsive" src="" alt="username"
-                                        style="width: 36px; height: 36px;" />
-                                </td>
-                                <td>
-                                    <div class="fw-bold">Dr. Carlos Mendoza</div>
-                                    <div class="text-secondary" style="font-size: 0.75rem;">carlos@psicogestion.com
-                                    </div>
-                                </td>
-                                <td>Psicólogo</td>
-                                <td><span class="status-badge badge-activo">Activo</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img class="bg-secondary rounded-circle image-responsive" src="" alt="username"
-                                        style="width: 36px; height: 36px;" />
-                                </td>
-                                <td>
-                                    <div class="fw-bold">Sofia Martínez</div>
-                                    <div class="text-secondary" style="font-size: 0.75rem;">sofia.m@gmail.com</div>
-                                </td>
-                                <td>Paciente</td>
-                                <td><span class="status-badge badge-activo">Activo</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img class="bg-secondary rounded-circle image-responsive" src="" alt="username"
-                                        style="width: 36px; height: 36px;" />
-                                </td>
-                                <td>
-                                    <div class="fw-bold">Dra. Lucía Torres</div>
-                                    <div class="text-secondary" style="font-size: 0.75rem;">lucia@psicogestion.com
-                                    </div>
-                                </td>
-                                <td>Psicólogo</td>
-                                <td><span class="status-badge badge-inactivo">Inactivo</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img class="bg-secondary rounded-circle image-responsive" src="" alt="username"
-                                        style="width: 36px; height: 36px;" />
-                                </td>
-                                <td>
-                                    <div class="fw-bold">Mateo Díaz</div>
-                                    <div class="text-secondary" style="font-size: 0.75rem;">mateo.diaz@gmail.com</div>
-                                </td>
-                                <td>Paciente</td>
-                                <td><span class="status-badge badge-activo">Activo</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img class="bg-secondary rounded-circle image-responsive" src="" alt="username"
-                                        style="width: 36px; height: 36px;" />
-                                </td>
-                                <td>
-                                    <div class="fw-bold">Fernanda Gómez</div>
-                                    <div class="text-secondary" style="font-size: 0.75rem;">fer.gomez@gmail.com</div>
-                                </td>
-                                <td>Paciente</td>
-                                <td><span class="status-badge badge-inactivo">Inactivo</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    @empty($lastFiveUsersCreated)
+                        <div class="alert alert-info" role="alert">
+                            Este mes no se han creado usuarios nuevos.
+                        </div>
+                    @else
+                        <table class="table custom-table table-borderless align-middle mb-0 table-light">
+                            <thead>
+                                <tr>
+                                    <th scope="col" colspan="2">Avatar & Nombre</th>
+                                    <th scope="col">Rol</th>
+                                    <th scope="col">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($lastFiveUsersCreated as $user)
+                                    <tr>
+                                        <td style="width: 40px;">
+                                            <img class="bg-secondary rounded-circle image-responsive"
+                                                src="{{ asset('storage/' . $user->avatar_url) }}" alt="{{ $user->name }}"
+                                                style="width: 36px; height: 36px;" />
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold">{{ $user->full_name }}</div>
+                                            <div class="text-secondary" style="font-size: 0.75rem;">{{ $user->email }}
+                                            </div>
+                                        </td>
+                                        <td>{{ $user->role->rol_name }}</td>
+                                        <td><span
+                                                class="status-badge {{ $user->is_active ? 'badge-activo' : 'badge-inactivo' }}">{{ $user->is_active ? 'Activo' : 'Inactivo' }}</span>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endempty
                 </div>
             </div>
         </div>
@@ -162,64 +137,40 @@
             <div class="custom-card p-4 h-100">
                 <h5 class="table-title">Últimas 5 Citas registradas</h5>
                 <div class="table-responsive">
-                    <table class="table custom-table table-borderless align-middle mb-0 table-light"
-                        style="background-color: #0c7bea !important;">
-                        <thead>
-                            <tr>
-                                <th scope="col">Paciente</th>
-                                <th scope="col">Psicólogo</th>
-                                <th scope="col">Fecha/Hora</th>
-                                <th scope="col">Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="fw-bold">Sofia Martínez</td>
-                                <td class="text-secondary">Dr. Carlos Mendoza</td>
-                                <td>
-                                    <div class="fw-bold" style="font-size: 0.8rem;">24 Oct</div>
-                                    <div class="text-secondary" style="font-size: 0.75rem;">10:00 AM</div>
-                                </td>
-                                <td><span class="status-badge badge-activo">Completada</span></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Mateo Díaz</td>
-                                <td class="text-secondary">Dr. Carlos Mendoza</td>
-                                <td>
-                                    <div class="fw-bold" style="font-size: 0.8rem;">24 Oct</div>
-                                    <div class="text-secondary" style="font-size: 0.75rem;">11:30 AM</div>
-                                </td>
-                                <td><span class="status-badge badge-activo">Completada</span></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Andrés Castro</td>
-                                <td class="text-secondary">Dra. Lucía Torres</td>
-                                <td>
-                                    <div class="fw-bold" style="font-size: 0.8rem;">25 Oct</div>
-                                    <div class="text-secondary" style="font-size: 0.75rem;">09:00 AM</div>
-                                </td>
-                                <td><span class="status-badge badge-programada">Programada</span></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Valeria Ruiz</td>
-                                <td class="text-secondary">Dra. Lucía Torres</td>
-                                <td>
-                                    <div class="fw-bold" style="font-size: 0.8rem;">25 Oct</div>
-                                    <div class="text-secondary" style="font-size: 0.75rem;">03:00 PM</div>
-                                </td>
-                                <td><span class="status-badge badge-inactivo">Cancelada</span></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Clara Soto</td>
-                                <td class="text-secondary">Dr. Carlos Mendoza</td>
-                                <td>
-                                    <div class="fw-bold" style="font-size: 0.8rem;">26 Oct</div>
-                                    <div class="text-secondary" style="font-size: 0.75rem;">04:30 PM</div>
-                                </td>
-                                <td><span class="status-badge badge-inasistencia">Inasistencia</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    @empty($lastFiveAppointmentsRegistered)
+                        <div class="alert alert-info" role="alert">
+                            Este mes no se han registrado citas nuevas.
+                        </div>
+                    @else
+                        <table class="table custom-table table-borderless align-middle mb-0 table-light"
+                            style="background-color: #0c7bea !important;">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Paciente</th>
+                                    <th scope="col">Psicólogo</th>
+                                    <th scope="col">Fecha/Hora</th>
+                                    <th scope="col">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($lastFiveAppointmentsRegistered as $appointment)
+                                    <tr>
+                                        <td class="fw-bold">{{ $appointment->patient->user->full_name }}</td>
+                                        <td class="text-secondary">{{ $appointment->psychologist->user->full_name }}</td>
+                                        <td>
+                                            <div class="fw-bold" style="font-size: 0.8rem;">
+                                                {{ $appointment->scheduled_at->locale('es')->isoFormat('D MMM, YYYY') }}</div>
+                                            <div class="text-secondary" style="font-size: 0.75rem;">
+                                                {{ $appointment->scheduled_at->locale('es')->isoFormat('HH:mm') }}</div>
+                                        </td>
+                                        <td><span
+                                                class="status-badge {{ $statusColors[$appointment->status] }}">{{ $status[$appointment->status] }}</span>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endempty
                 </div>
             </div>
         </div>

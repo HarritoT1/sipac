@@ -81,7 +81,7 @@ const changePage = (change, numPages) => {
 
     pageInput.value = currentPage + change;
 
-    document.getElementById('filterForm').requestSubmit();
+    document.getElementById('filterForm').submit();
 };
 
 const previewImage = (event, idImg) => {

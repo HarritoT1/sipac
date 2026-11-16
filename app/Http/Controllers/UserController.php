@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
+use App\Models\User;
 
 class UserController extends Controller
 {
@@ -71,5 +72,54 @@ class UserController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/')->with('message', 'Has cerrado sesión exitosamente.');
+    }
+
+    public function findAll(Request $request)
+    {
+        // Sanitización previa.
+        $request->merge([
+            'nameOrEmail' => Helpers::emptyToNull($request->query('nameOrEmail')),
+            'rol_id' => Helpers::emptyToNull($request->query('rol_id')),
+            'is_active' => Helpers::emptyToNull($request->query('is_active')),
+            'page' => intval($request->query('page') ?? 1),
+        ]);
+
+        // Validación de los datos de entrada.
+        $data = $request->validate([
+            'nameOrEmail' => 'nullable|string|max:255',
+            'rol_id' => 'nullable|integer|exists:roles,id|in:2,3',
+            'is_active' => 'nullable|boolean',
+            'page' => 'required|integer|min:1',
+        ], [
+            'nameOrEmail.string' => 'El nombre o email debe ser una cadena de texto.',
+            'nameOrEmail.max' => 'El nombre o email no puede tener más de 255 caracteres.',
+            'rol_id.integer' => 'El rol debe ser un entero.',
+            'rol_id.exists' => 'El rol no existe.',
+            'is_active.boolean' => 'El estado debe ser verdadero o falso.',
+            'page.required' => 'La página es obligatoria.',
+            'page.integer' => 'La página debe ser un entero.',
+            'page.min' => 'La página debe ser mayor o igual a 1.',
+        ]);
+
+        $limit = 6; // Registros por página.
+
+        $usersQuery = User::with('role');
+
+        $usersQuery->when($data['nameOrEmail'], function ($query) use ($data) {
+            $query->where(function ($subQuery) use ($data) { // Todas las condiciones deben estar agrupadas por parentesis logicos.
+                $subQuery->where('full_name', 'like', '%' . $data['nameOrEmail'] . '%')
+                    ->orWhere('email', 'like', '%' . $data['nameOrEmail'] . '%');
+            });
+        })->when($data['rol_id'], function ($query) use ($data) {
+            $query->where('rol_id', $data['rol_id']);
+        })->when(!is_null($data['is_active']), function ($query) use ($data) {
+            $query->where('is_active', $data['is_active']);
+        });
+
+        // Paginando resultados, con limite de 6 resultados por página.
+
+        $users = $usersQuery->paginate(perPage: $limit);
+
+        return view('admin.admin_usuarios', compact('users'));
     }
 }
