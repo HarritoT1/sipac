@@ -16,7 +16,7 @@ class PsychologistSeeder extends Seeder
         $userIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
         foreach ($userIds as $userId) {
-            Psychologist::Factory()->count(1)->state([
+            Psychologist::factory()->count(1)->state([
                 'user_id' => $userId
             ])->create();
         }

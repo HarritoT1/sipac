@@ -134,14 +134,17 @@
                                 <td>
                                     <div class="text-center row row-cols-1 row-cols-md-2 justify-content-center g-1">
                                         <a class="btn btn-sm btn-light text-secondary" title="Ver detalle"
-                                            href="{{ $user->role->slug === 'psychologist' ? route('admin_detalle_usuario_psicologo', ['id' => $user->id]) : route('admin_detalle_usuario_paciente', ['id' => $user->id]) }}"
+                                            href="{{ $user->role->slug === 'psychologist' ? route('admin_detalle_usuario_psicologo', ['psychologist' => $user->psychologist?->id ?? 0]) : route('admin_detalle_usuario_paciente', ['patient' => $user->patient?->id ?? 0]) }}"
                                             target="_self"><i class="bi bi-eye-fill"></i></a>
-                                        <form method="POST" action="" enctype="application/x-www-form-urlencoded"
-                                            class="needs-validation" novalidate autocomplete="off">
+                                        <form id="destroy_{{ $user->id }}" method="POST"
+                                            action="{{ route('delete_account', ['user' => $user->id]) }}"
+                                            enctype="application/x-www-form-urlencoded" class="needs-validation" novalidate
+                                            autocomplete="off">
                                             @csrf
                                             @method('DELETE')
                                             <button class="btn btn-sm btn-light text-danger w-100" title="Eliminar"
-                                                type="submit"><i class="bi bi-trash-fill"></i></button>
+                                                type="button" onclick="askBeforeDelete('{{ 'destroy_' . $user->id }}')"><i
+                                                    class="bi bi-trash-fill"></i></button>
                                         </form>
                                     </div>
                                 </td>

@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PsychologistController;
+use App\Http\Controllers\PatientController;
 
 Route::get('/', function () {
     return view('login');
@@ -21,6 +23,8 @@ Route::get('/request-email', function () {
 Route::get('/change-password', function () {
     return view('general.change_password');
 })->name('change_password');
+
+Route::delete('/delete-account/{user}', [UserController::class, 'destroy'])->where('user', '[0-9]+')->name('delete_account')->middleware('auth');
 
 /**** ADMIN ****/
 
@@ -41,19 +45,17 @@ Route::middleware(['auth'])->group(function () {
         return view('admin.admin_registrar_paciente');
     })->name('admin_registrar_paciente');
 
-    Route::get('/admin-detalle-usuario-psicologo/{id}', function ($id) {
-        return view('admin.admin_detalle_usuario_psicologo');
-    })->name('admin_detalle_usuario_psicologo')->where('id', '[0-9]+');
+    Route::get('/admin-detalle-usuario-psicologo/{psychologist}', [PsychologistController::class, 'show'])->name('admin_detalle_usuario_psicologo')->where('psychologist', '[0-9]+');
 
-    Route::get('/admin-detalle-usuario-paciente/{id}', function ($id) {
+    Route::get('/admin-detalle-usuario-paciente/{patient}', function ($id) {
         return view('admin.admin_detalle_usuario_paciente');
-    })->name('admin_detalle_usuario_paciente')->where('id', '[0-9]+');
+    })->name('admin_detalle_usuario_paciente')->where('patient', '[0-9]+');
 
-    Route::get('/admin-actualizar-psicologo/{id}', function ($id) {
+    Route::get('/admin-actualizar-psicologo/{psychologist}', function ($id) {
         return view('admin.admin_actualizar_psicologo');
-    })->name('admin_actualizar_psicologo')->where('id', '[0-9]+');
+    })->name('admin_actualizar_psicologo')->where('psychologist', '[0-9]+');
 
-    Route::get('/admin-actualizar-paciente/{id}', function ($id) {
+    Route::get('/admin-actualizar-paciente/{patient}', function ($id) {
         return view('admin.admin_actualizar_paciente');
-    })->name('admin_actualizar_paciente')->where('id', '[0-9]+');
+    })->name('admin_actualizar_paciente')->where('patient', '[0-9]+');
 });

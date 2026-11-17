@@ -59,7 +59,7 @@ class UserController extends Controller
         }
 
         return back()->withErrors([
-            'credentials' => 'El nombre de usuario y/o contraseña son incorrectos.',
+            'credentials' => 'El nombre de usuario y/o contraseña son incorrectos o el usuario no esta activo.',
         ])->onlyInput('email');
     }
 
@@ -103,7 +103,7 @@ class UserController extends Controller
 
         $limit = 6; // Registros por página.
 
-        $usersQuery = User::with('role');
+        $usersQuery = User::with(['role', 'patient', 'psychologist'])->where('is_visible', true);
 
         $usersQuery->when($data['nameOrEmail'], function ($query) use ($data) {
             $query->where(function ($subQuery) use ($data) { // Todas las condiciones deben estar agrupadas por parentesis logicos.
@@ -121,5 +121,18 @@ class UserController extends Controller
         $users = $usersQuery->paginate(perPage: $limit);
 
         return view('admin.admin_usuarios', compact('users'));
+    }
+
+    public function destroy(User $user)
+    {
+        try {
+            $user->is_active = false;
+            $user->is_visible = false;
+            $user->save();
+        } catch (\Throwable $th) {
+            return redirect()->back()->withErrors('error', 'El usuario no pudo ser eliminado.');
+        }
+
+        return redirect()->route('admin_usuarios')->with('message', 'El usuario fue eliminado exitosamente.');
     }
 }

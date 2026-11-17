@@ -13,7 +13,11 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->count(10)->unverified()->create();
-        User::factory()->count(10)->create();
+        User::factory()->count(10)->unverified()->create([
+            'rol_id' => 2
+        ]);
+        User::factory()->count(10)->create([
+            'rol_id' => 3
+        ]);
     }
 }

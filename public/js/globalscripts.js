@@ -84,6 +84,12 @@ const changePage = (change, numPages) => {
     document.getElementById('filterForm').submit();
 };
 
+const askBeforeDelete = (formId) => {
+    if (confirm('¿Seguro que quieres eliminar el usuario? Este proceso es irreversible.')) {
+        document.getElementById(formId).submit();
+    }
+};
+
 const previewImage = (event, idImg) => {
     const fileInput = event.target;
     const previewImg = document.getElementById(idImg);

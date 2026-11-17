@@ -21,47 +21,62 @@
         <div class="col-xl-4 col-lg-5 mb-4 mb-lg-0">
             <div class="custom-card p-4 text-center h-100 d-flex flex-column">
                 <div class="mt-2">
-                    <img src="https://ui-avatars.com/api/?name=Carlos+Mendoza&background=random" alt="Avatar Psicólogo"
+                    <img src="{{ asset('storage/' . $psychologist->user->avatar_url) }}"
+                        alt="{{ $psychologist->user->name }}"
                         class="profile-avatar shadow-sm image-responsive mb-3 border border-5 border-secondary"
                         style="width: 120px; height: 120px;" />
 
-                    <h4 class="fw-bold text-dark mb-1">Dr. Carlos Mendoza</h4>
-                    <p class="text-secondary mb-3" style="font-size: 0.9rem;">CarlosMz</p>
+                    <h4 class="fw-bold text-dark mb-1">{{ $psychologist->user->full_name }}</h4>
+                    <p class="text-secondary mb-3" style="font-size: 0.9rem;">{{ $psychologist->user->name }}</p>
 
                     <div class="d-flex justify-content-center gap-2 mb-2">
                         <span class="badge-custom badge-psicologo">Psicólogo</span>
-                        <span class="badge-custom badge-status-active">Activo</span>
+                        <span
+                            class="badge-custom {{ $psychologist->user->is_active ? 'badge-activo' : 'badge-inactivo' }}">{{ $psychologist->user->is_active ? 'Activo' : 'Inactivo' }}</span>
                     </div>
                 </div>
 
                 <div class="stats-container">
                     <div class="stat-box">
-                        <div class="stat-number">42</div>
+                        <div class="stat-number">{{ $number_appointments }}</div>
                         <div class="stat-label">Citas Totales</div>
                     </div>
                     <div class="stat-divider"></div>
                     <div class="stat-box">
-                        <div class="stat-number">39</div>
+                        <div class="stat-number">{{ $number_sessions }}</div>
                         <div class="stat-label">Sesiones Totales</div>
                     </div>
                 </div>
 
                 <!-- Botones de Acción -->
                 <div class="mt-auto px-2 pb-2">
-                    <a href="{{ route('admin_actualizar_psicologo', ['id' => 8]) }}" title="Editar Perfil" target="_self"
-                        class="btn btn-outline-edit mb-3">
+                    <a href="{{ route('admin_actualizar_psicologo', ['psychologist' => $psychologist->id]) }}"
+                        title="Editar Perfil" target="_self" class="btn btn-outline-edit mb-3">
                         <i class="bi bi-pencil-square me-2"></i>Editar Perfil
                     </a>
-                    <form id="destroy" method="POST" enctype="application/x-www-form-urlencoded" action=""
+                    <form id="destroy_{{ $psychologist->user->id }}" method="POST"
+                        enctype="application/x-www-form-urlencoded"
+                        action="{{ route('delete_account', ['user' => $psychologist->user->id]) }}"
                         class="needs-validation" novalidate autocomplete="off">
                         @csrf
                         @method('DELETE')
 
-                        <button type="submit" class='btn btn-outline-delete'>
+                        <button type="button" class='btn btn-outline-delete' title="Eliminar"
+                            onclick="askBeforeDelete('{{ 'destroy_' . $psychologist->user->id }}')">
                             <i class="bi bi-trash me-2"></i>Eliminar Cuenta
                         </button>
                     </form>
                 </div>
+
+                @if ($errors->any())
+                    <div class="alert alert-danger mt-3" role="alert">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -73,60 +88,59 @@
                 <div class="row detail-row">
                     <div class="col-md-6 mb-3 mb-md-0">
                         <div class="detail-label">Correo electrónico</div>
-                        <div class="detail-value">carlos.mendoza@psicogestion.com</div>
+                        <div class="detail-value">{{ $psychologist->user->email }}</div>
                     </div>
                     <div class="col-md-6">
                         <div class="detail-label">Teléfono de contacto</div>
-                        <div class="detail-value">5588374683</div>
+                        <div class="detail-value">{{ $psychologist->user->phone_number }}</div>
                     </div>
                 </div>
 
                 <div class="row detail-row">
                     <div class="col-md-6 mb-3 mb-md-0">
                         <div class="detail-label">Fecha de registro</div>
-                        <div class="detail-value">12 de Marzo, 2022</div>
+                        <div class="detail-value">
+                            {{ $psychologist->created_at->locale('es')->isoFormat('D [de] MMMM, YYYY') }}</div>
                     </div>
                     <div class="col-md-6">
                         <div class="detail-label">CURP</div>
-                        <div class="detail-value">CATH254856HMMJJA4</div>
+                        <div class="detail-value">{{ $psychologist->user->curp }}</div>
                     </div>
                 </div>
 
                 <div class="row detail-row">
                     <div class="col-md-6 mb-3 mb-md-0">
                         <div class="detail-label">Domicilio</div>
-                        <div class="detail-value">CALLE BUGAMBILIAS, CDMX, C.P. 56888</div>
+                        <div class="detail-value">{{ $psychologist->user->home_address }}</div>
                     </div>
                     <div class="col-md-6">
                         <div class="detail-label">Número de licencia (Cédula profesional)</div>
-                        <div class="detail-value">L-36FHGSSWE-5</div>
+                        <div class="detail-value">{{ $psychologist->professional_license }}</div>
                     </div>
                 </div>
 
                 <div class="row detail-row">
                     <div class="col-md-6 mb-3 mb-md-0">
                         <div class="detail-label">Tarifa de consulta</div>
-                        <div class="detail-value">80.50 MXN</div>
+                        <div class="detail-value">{{ $psychologist->consultation_fee }} MXN</div>
                     </div>
                     <div class="col-md-6">
                         <div class="detail-label">Años de experiencia</div>
-                        <div class="detail-value">2 AÑOS</div>
+                        <div class="detail-value">{{ $psychologist->years_experience }} AÑOS</div>
                     </div>
                 </div>
 
                 <div class="row detail-row">
                     <div class="col-12">
                         <div class="detail-label">Especialidad Médica</div>
-                        <div class="detail-value specialty">Ansiedad / Depresión / Terapia de pareja / Adolescentes / Duelo
-                            / Adicciones</div>
+                        <div class="detail-value specialty text-uppercase">{{ $specialities }}</div>
                     </div>
                 </div>
 
                 <div class="row detail-row">
                     <div class="col-12">
                         <div class="detail-label">Trayectoria profesional</div>
-                        <div class="detail-value">Llevo 10 años de experiencia en el área clínica comunitaria atendiendo
-                            familias y jóvenes...</div>
+                        <div class="detail-value">{{ $psychologist->professional_bio ?? 'Sin descripción.' }}</div>
                     </div>
                 </div>
 

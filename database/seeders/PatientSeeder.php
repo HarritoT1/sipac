@@ -16,7 +16,7 @@ class PatientSeeder extends Seeder
         $userIds = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
         foreach ($userIds as $userId) {
-            Patient::Factory()->count(1)->state([
+            Patient::factory()->count(1)->state([
                 'user_id' => $userId
             ])->create();
         }
