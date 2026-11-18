@@ -39,6 +39,8 @@
     <form id="filterForm" action="{{ route('admin_usuarios') }}" method="get" enctype="application/x-www-form-urlencoded"
         novalidate autocomplete="off" class="needs-validation">
         @csrf
+        <input id="page" type="hidden" name="page" value="{{ $users->currentPage() }}" />
+
         <div class="p-3 mb-4 bg-white rounded-3 shadow-sm border border-light">
             <div class="row g-3 align-items-center">
                 <div class="col-md-5">
@@ -161,8 +163,6 @@
                     {{ $users->total() }}
                     usuarios resultantes</span>
                 <div class="btn-group">
-                    <input id="page" type="hidden" name="page" value="{{ $users->currentPage() }}"
-                        form="filterForm" />
                     <button onclick="changePage(-1, {{ $users->lastPage() }})" type="button"
                         class="btn btn-sm btn-outline-secondary px-3 bg-white" @disabled($users->onFirstPage())>Anterior</button>
                     <button onclick="changePage(1, {{ $users->lastPage() }})" type="button"

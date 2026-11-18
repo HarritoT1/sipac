@@ -10,14 +10,14 @@ class Helpers extends Controller
     public static array $status = [
         'scheduled' => 'Programada',
         'completed' => 'Completada',
-        'canceled' => 'Cancelada',
+        'cancelled' => 'Cancelada',
         'absent' => 'Inasistencia'
     ];
 
     public static array $statusColors = [
         'scheduled' => 'badge-programada',
         'completed' => 'badge-completada',
-        'canceled' => 'badge-cancelada',
+        'cancelled' => 'badge-cancelada',
         'absent' => 'badge-inasistencia'
     ];
 

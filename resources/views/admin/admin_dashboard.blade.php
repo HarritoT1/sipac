@@ -93,7 +93,7 @@
             <div class="custom-card p-4 h-100">
                 <h5 class="table-title">Últimos 5 Usuarios creados</h5>
                 <div class="table-responsive">
-                    @empty($lastFiveUsersCreated)
+                    @if ($lastFiveUsersCreated->isEmpty())
                         <div class="alert alert-info" role="alert">
                             Este mes no se han creado usuarios nuevos.
                         </div>
@@ -103,16 +103,16 @@
                                 <tr>
                                     <th scope="col" colspan="2">Avatar & Nombre</th>
                                     <th scope="col">Rol</th>
-                                    <th scope="col">Estado</th>
+                                    <th scope="col" style="text-align: center !important;">Estado</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($lastFiveUsersCreated as $user)
                                     <tr>
-                                        <td style="width: 40px;">
-                                            <img class="bg-secondary rounded-circle image-responsive"
+                                        <td class="px-0" style="width: 60px;">
+                                            <img class="bg-secondary rounded-circle image-responsive profile-avatar"
                                                 src="{{ asset('storage/' . $user->avatar_url) }}" alt="{{ $user->name }}"
-                                                style="width: 36px; height: 36px;" />
+                                                style="width: 40px !important; height: 40px; !important" />
                                         </td>
                                         <td>
                                             <div class="fw-bold">{{ $user->full_name }}</div>
@@ -127,7 +127,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                    @endempty
+                    @endif
                 </div>
             </div>
         </div>
@@ -137,7 +137,7 @@
             <div class="custom-card p-4 h-100">
                 <h5 class="table-title">Últimas 5 Citas registradas</h5>
                 <div class="table-responsive">
-                    @empty($lastFiveAppointmentsRegistered)
+                    @if ($lastFiveAppointmentsRegistered->isEmpty())
                         <div class="alert alert-info" role="alert">
                             Este mes no se han registrado citas nuevas.
                         </div>
@@ -149,7 +149,7 @@
                                     <th scope="col">Paciente</th>
                                     <th scope="col">Psicólogo</th>
                                     <th scope="col">Fecha/Hora</th>
-                                    <th scope="col">Estado</th>
+                                    <th scope="col" style="text-align: center !important;">Estado</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -159,7 +159,8 @@
                                         <td class="text-secondary">{{ $appointment->psychologist->user->full_name }}</td>
                                         <td>
                                             <div class="fw-bold" style="font-size: 0.8rem;">
-                                                {{ $appointment->scheduled_at->locale('es')->isoFormat('D MMM, YYYY') }}</div>
+                                                {{ $appointment->scheduled_at->locale('es')->isoFormat('D MMM, YYYY') }}
+                                            </div>
                                             <div class="text-secondary" style="font-size: 0.75rem;">
                                                 {{ $appointment->scheduled_at->locale('es')->isoFormat('HH:mm') }}</div>
                                         </td>
@@ -170,7 +171,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                    @endempty
+                    @endif
                 </div>
             </div>
         </div>

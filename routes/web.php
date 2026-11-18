@@ -47,9 +47,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/admin-detalle-usuario-psicologo/{psychologist}', [PsychologistController::class, 'show'])->name('admin_detalle_usuario_psicologo')->where('psychologist', '[0-9]+');
 
-    Route::get('/admin-detalle-usuario-paciente/{patient}', function ($id) {
-        return view('admin.admin_detalle_usuario_paciente');
-    })->name('admin_detalle_usuario_paciente')->where('patient', '[0-9]+');
+    Route::get('/admin-detalle-usuario-paciente/{patient}', [PatientController::class, 'show'])->name('admin_detalle_usuario_paciente')->where('patient', '[0-9]+');
 
     Route::get('/admin-actualizar-psicologo/{psychologist}', function ($id) {
         return view('admin.admin_actualizar_psicologo');

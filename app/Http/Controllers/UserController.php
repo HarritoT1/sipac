@@ -103,7 +103,7 @@ class UserController extends Controller
 
         $limit = 6; // Registros por página.
 
-        $usersQuery = User::with(['role', 'patient', 'psychologist'])->where('is_visible', true);
+        $usersQuery = User::with(['role', 'patient', 'psychologist'])->where('is_visible', true)->whereNot('rol_id', 1);
 
         $usersQuery->when($data['nameOrEmail'], function ($query) use ($data) {
             $query->where(function ($subQuery) use ($data) { // Todas las condiciones deben estar agrupadas por parentesis logicos.

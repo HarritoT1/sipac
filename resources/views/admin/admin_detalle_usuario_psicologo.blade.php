@@ -104,7 +104,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="detail-label">CURP</div>
-                        <div class="detail-value">{{ $psychologist->user->curp }}</div>
+                        <div class="detail-value text-uppercase">{{ $psychologist->user->curp }}</div>
                     </div>
                 </div>
 

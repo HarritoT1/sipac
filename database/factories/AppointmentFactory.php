@@ -27,7 +27,12 @@ class AppointmentFactory extends Factory
                 'online',
                 'in_person',
             ]),
-            'status' => 'scheduled',
+            'status' => fake()->randomElement([
+                'scheduled',
+                'completed',
+                'cancelled',
+                'absent',
+            ]),
             'reason' => fake()->paragraph(),
             'psychologist_id' => Psychologist::query()->inRandomOrder()->first()->id,
             'patient_id' => Patient::query()->inRandomOrder()->first()->id,
