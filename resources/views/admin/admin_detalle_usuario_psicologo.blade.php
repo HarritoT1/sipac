@@ -68,6 +68,12 @@
                     </form>
                 </div>
 
+                @if (session('message'))
+                    <div class="alert alert-success mt-3" role="alert">
+                        {{ session('message') }}
+                    </div>
+                @endif
+
                 @if ($errors->any())
                     <div class="alert alert-danger mt-3" role="alert">
                         <ul class="mb-0">
@@ -115,7 +121,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="detail-label">Número de licencia (Cédula profesional)</div>
-                        <div class="detail-value">{{ $psychologist->professional_license }}</div>
+                        <div class="detail-value text-uppercase">{{ $psychologist->professional_license }}</div>
                     </div>
                 </div>
 

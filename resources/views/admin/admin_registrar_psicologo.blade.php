@@ -23,8 +23,8 @@
                 SIPAC.</p>
         </div>
 
-        <form id="registerForm" action="" method="post" enctype="multipart/form-data" novalidate autocomplete="off"
-            class="needs-validation">
+        <form id="registerForm" action="{{ route('store_psychologist') }}" method="post" enctype="multipart/form-data"
+            novalidate autocomplete="off" class="needs-validation">
             @csrf
             <div class="profile-section gap-4 mb-4 pb-2">
                 <img id="avatar_preview" src="{{ asset('img/default-avatar.png') }}" alt="Avatar Psicólogo"
@@ -42,7 +42,7 @@
                 <div class="col-md-6">
                     <label for="full_name" class="custom-label">Nombre y apellidos</label>
                     <input id="full_name" type="text" class="form-control form-control-custom"
-                        placeholder="Ingrese el nombre completo" name="full_name" required maxlength="255"
+                        placeholder="Ingrese el nombre completo" name="full_name" required maxlength="255" minlength="5"
                         value="{{ old('full_name', '') }}" />
                     <div class="invalid-feedback">
                         Ingresa un nombre completo válido.
@@ -52,7 +52,7 @@
                 <div class="col-md-6">
                     <label for="name" class="custom-label">Nombre de usuario (recuerda guardarlo)</label>
                     <input id="name" type="text" class="form-control form-control-custom"
-                        placeholder="Usuario para inicio de sesión" name="name" required maxlength="255"
+                        placeholder="Usuario para inicio de sesión" name="name" required maxlength="255" minlength="5"
                         value="{{ old('name', '') }}" />
                     <div class="invalid-feedback">
                         Ingresa un nombre de usuario válido.
@@ -72,7 +72,7 @@
                 <div class="col-md-6">
                     <label for="phone_number" class="custom-label">Teléfono</label>
                     <input id="phone_number" type="tel" class="form-control form-control-custom"
-                        placeholder="10 dígitos numéricos" name="phone_number" required maxlength="20"
+                        placeholder="10 dígitos numéricos" name="phone_number" required maxlength="12" minlength="10"
                         value="{{ old('phone_number', '') }}" />
                     <div class="invalid-feedback">
                         Ingresa un número de teléfono válido.
@@ -83,7 +83,7 @@
                     <label for="password" class="custom-label">Contraseña</label>
                     <input id="password" type="text" class="form-control form-control-custom"
                         placeholder="Contraseña para inicio de sesión" name="password" required maxlength="255"
-                        value="" />
+                        minlength="8" value="" />
                     <div class="valid-feedback" id="password_valid_feedback">
                         Contraseña válida.
                     </div>
@@ -96,7 +96,7 @@
                     <label for="confirm_password" class="custom-label">Confirmar Contraseña</label>
                     <input id="confirm_password" type="text" class="form-control form-control-custom"
                         placeholder="Confirma tu contraseña" name="confirm_password" required maxlength="255"
-                        value="" />
+                        minlength="8" value="" />
                     <div class="valid-feedback" id="confirm_password_valid_feedback">
                         Contraseña válida.
                     </div>
@@ -109,13 +109,13 @@
                     <label class="custom-label">Especialidad</label>
                     <select class="form-control form-select text-secondary" id="specialty"
                         data-placeholder="Selecciona minimo una opción" name="specialty[]" required multiple>
-                        <option value="ansiedad">ansiedad</option>
-                        <option value="depresión">depresión</option>
-                        <option value="terapia de pareja">terapia de pareja</option>
-                        <option value="adolescentes">adolescentes</option>
-                        <option value="terapia familiar">terapia familiar</option>
-                        <option value="duelo">duelo</option>
-                        <option value="adicciones">adicciones</option>
+                        <option value="ansiedad" @selected(in_array('ansiedad', old('specialty', []), true))>ansiedad</option>
+                        <option value="depresión" @selected(in_array('depresión', old('specialty', []), true))>depresión</option>
+                        <option value="terapia de pareja" @selected(in_array('terapia de pareja', old('specialty', []), true))>terapia de pareja</option>
+                        <option value="adolescentes" @selected(in_array('adolescentes', old('specialty', []), true))>adolescentes</option>
+                        <option value="terapia familiar" @selected(in_array('terapia familiar', old('specialty', []), true))>terapia familiar</option>
+                        <option value="duelo" @selected(in_array('duelo', old('specialty', []), true))>duelo</option>
+                        <option value="adicciones" @selected(in_array('adicciones', old('specialty', []), true))>adicciones</option>
                     </select>
 
                     <div class="invalid-feedback">
@@ -125,8 +125,9 @@
 
                 <div class="col-md-6">
                     <label for="professional_license" class="custom-label">Número de Licencia (cédula profesional)</label>
-                    <input id="professional_license" type="text" class="form-control form-control-custom"
-                        placeholder="Ej. L-9923415-COL" name="professional_license" required maxlength="15"
+                    <input id="professional_license" type="text"
+                        class="form-control form-control-custom text-uppercase" placeholder="Ej. L-9923415-COL"
+                        name="professional_license" required maxlength="15" minlength="5"
                         value="{{ old('professional_license', '') }}" />
                     <div class="invalid-feedback">
                         Ingresa un número de licencia válido.
@@ -135,7 +136,7 @@
 
                 <div class="col-md-6">
                     <label for="curp" class="custom-label">CURP</label>
-                    <input id="curp" type="text" class="form-control form-control-custom"
+                    <input id="curp" type="text" class="form-control form-control-custom text-uppercase"
                         placeholder="Clave Única de Registro de Población" name="curp" required maxlength="18"
                         minlength="18" value="{{ old('curp', '') }}" />
                     <div class="invalid-feedback">
@@ -147,7 +148,7 @@
                     <label for="home_address" class="custom-label">Domicilio</label>
                     <input id="home_address" type="text" class="form-control form-control-custom"
                         placeholder="Calle, número, colonia, alcaldía o municipio" name="home_address" required
-                        value="{{ old('home_address', '') }}" />
+                        minlength="5" maxlength="5000" value="{{ old('home_address', '') }}" />
                     <div class="invalid-feedback">
                         Ingresa un domicilio válido.
                     </div>
@@ -176,7 +177,7 @@
                 <div class="col-12">
                     <label for="professional_bio" class="custom-label">Agrega una descripción de tu trayectoria
                         profesional</label>
-                    <textarea id="professional_bio" class="form-control form-control-custom" rows="3"
+                    <textarea id="professional_bio" class="form-control form-control-custom" rows="3" maxlength="30000"
                         placeholder="Resumen curricular o enfoque terapéutico..." name="professional_bio">{{ old('professional_bio', '') }}</textarea>
                     <div class="invalid-feedback">
                         Ingresa una descripción válida.

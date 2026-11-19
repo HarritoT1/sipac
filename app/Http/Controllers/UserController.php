@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -125,6 +126,8 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        abort_if(!$user->is_visible, 403, 'Acceso denegado.');
+
         try {
             $user->is_active = false;
             $user->is_visible = false;
@@ -134,5 +137,22 @@ class UserController extends Controller
         }
 
         return redirect()->route('admin_usuarios')->with('message', 'El usuario fue eliminado exitosamente.');
+    }
+
+    public function deleteAvatar(User $user)
+    {
+        abort_if(!$user->is_visible, 403, 'Acceso denegado.');
+
+        try {
+            if ($user->avatar_url !== 'UploadFiles/default-avatar.png' && Storage::disk('public')->exists($user->avatar_url)) {
+                Storage::disk('public')->delete($user->avatar_url);
+            }
+            $user->avatar_url = 'UploadFiles/default-avatar.png';
+            $user->save();
+        } catch (\Throwable $th) {
+            return redirect()->back()->withErrors(['error' => 'El avatar no pudo ser eliminado, inténtelo nuevamente.']);
+        }
+
+        return redirect()->back()->with('message', 'El avatar fue eliminado exitosamente.');
     }
 }

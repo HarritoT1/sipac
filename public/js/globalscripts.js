@@ -308,7 +308,7 @@ const deleteAvatar = (userId) => {
 
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = `/users/${userId}/avatar`;
+    form.action = `/delete-avatar/${userId}`;
     form.enctype = 'application/x-www-form-urlencoded; charset=UTF-8a';
     form.style.display = 'none';
 
