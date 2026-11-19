@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Http\Controllers\Helpers;
 use Illuminate\Support\Str;
 
-class CreatePsychologistResquest extends FormRequest
+class CreatePsychologistRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

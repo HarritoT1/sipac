@@ -27,6 +27,11 @@
             method="post" enctype="multipart/form-data" novalidate autocomplete="off" class="needs-validation">
             @csrf
             @method('PUT')
+
+            <input id="user_id" type="hidden" name="user_id" value="{{ $psychologist->user->id }}" />
+
+            <input id="psychologist_id" type="hidden" name="psychologist_id" value="{{ $psychologist->id }}" />
+
             <div class="profile-section gap-4 mb-4 pb-2">
                 <img id="avatar_preview" src="{{ asset('storage/' . $psychologist->user->avatar_url) }}"
                     alt="{{ $psychologist->user->name }}" class="profile-avatar shadow-sm image-responsive mx-0" />
@@ -87,8 +92,8 @@
                 <div class="col-md-6">
                     <label for="is_active" class="custom-label">Activo en el sistema</label>
                     <select class="form-control form-select text-secondary" id="is_active" name="is_active" required>
-                        <option value="true" @selected($psychologist->user->is_active)>Si</option>
-                        <option value="false" @selected(!$psychologist->user->is_active)>No</option>
+                        <option value="1" @selected($psychologist->user->is_active)>Si</option>
+                        <option value="0" @selected(!$psychologist->user->is_active)>No</option>
                     </select>
                     <div class="invalid-feedback">
                         Selecciona si el psicólogo está activo en el sistema.
