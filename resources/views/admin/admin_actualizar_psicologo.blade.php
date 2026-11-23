@@ -91,7 +91,7 @@
 
                 <div class="col-md-6">
                     <label for="is_active" class="custom-label">Activo en el sistema</label>
-                    <select class="form-control form-select text-secondary" id="is_active" name="is_active" required>
+                    <select class="form-control form-select text-dark" id="is_active" name="is_active" required>
                         <option value="1" @selected($psychologist->user->is_active)>Si</option>
                         <option value="0" @selected(!$psychologist->user->is_active)>No</option>
                     </select>
