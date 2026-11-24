@@ -5,6 +5,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PsychologistController;
 use App\Http\Controllers\PatientController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 
 Route::get('/', function () {
     return view('login');
@@ -13,6 +15,25 @@ Route::get('/', function () {
 Route::post('/', [UserController::class, 'authenticate'])->name('auth.login');
 
 Route::post('/logout', [UserController::class, 'disauthenticate'])->name('auth.logout')->middleware('auth');
+
+/**** VERIFICATION ****/
+Route::middleware(['auth'])->group(function () {
+    Route::get('/email/verify', function () {
+        return view('general.verify_email');
+    })->name('verification.notice');
+
+    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+        $request->fulfill();
+
+        return redirect('/psycho-dashboard');
+    })->middleware('signed')->name('verification.verify');
+
+    Route::post('/email/verification-notification', function (Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+
+        return back()->with('message', 'Enlace de verificación enviado!');
+    })->middleware('throttle:6,1')->name('verification.send');
+});
 
 /**** GENERAL USER ****/
 
@@ -24,7 +45,7 @@ Route::get('/change-password', function () {
     return view('general.change_password');
 })->name('change_password');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/delete-avatar/{user}', [UserController::class, 'deleteAvatar'])->where('user', '[0-9]+')->name('delete_avatar');
 
     /*PSICOLOGOS*/
@@ -40,9 +61,16 @@ Route::middleware(['auth'])->group(function () {
     /*PACIENTES*/
 });
 
+/**** PSYCHOLOGIST ****/
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/psycho-dashboard', function () {
+        return view('psychologist.psycho_dashboard');
+    })->name('psycho_dashboard');
+});
+
 /**** ADMIN AND PSYCHOLOGIST ****/
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/delete-account/{user}', [UserController::class, 'destroy'])->where('user', '[0-9]+')->name('delete_account');
 
     /*PSICOLOGOS*/
@@ -62,7 +90,7 @@ Route::middleware(['auth'])->group(function () {
 
 /**** ADMIN ****/
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin-dashboard', [AdminController::class, 'index'])->name('admin_dashboard');
 
     Route::get('/admin-usuarios', [UserController::class, 'findAll'])->name('admin_usuarios');

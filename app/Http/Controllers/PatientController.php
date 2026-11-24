@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Log;
 use App\Models\EmergencyContact;
+use Illuminate\Auth\Events\Registered;
 
 class PatientController extends Controller
 {
@@ -101,6 +102,8 @@ class PatientController extends Controller
 
             return redirect()->back()->withErrors(['error' => 'El paciente no pudo ser registrado en este momento, por favor intente nuevamente.']);
         }
+
+        event(new Registered($patient->user));
 
         return redirect()->route('admin_detalle_usuario_paciente', ['patient' => $patient->id])->with('message', 'Paciente registrado correctamente.');
     }

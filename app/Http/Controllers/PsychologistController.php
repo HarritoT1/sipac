@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Auth\Events\Registered;
 
 class PsychologistController extends Controller
 {
@@ -88,6 +89,8 @@ class PsychologistController extends Controller
 
             return redirect()->back()->withErrors(['error' => 'El psicólogo no pudo ser registrado en este momento, por favor intente nuevamente.']);
         }
+
+        event(new Registered($psychologist->user));
 
         return redirect()->route('admin_detalle_usuario_psicologo', ['psychologist' => $psychologist->id])->with('message', 'Psicólogo registrado correctamente.');
     }

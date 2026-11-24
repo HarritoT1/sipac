@@ -53,7 +53,7 @@ class UserController extends Controller
             }
 
             if (Auth::user()->role->slug === 'psychologist') {
-                return redirect()->route('request_email');
+                return redirect()->route('psycho_dashboard');
             }
 
             return redirect()->route('change_password');
