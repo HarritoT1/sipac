@@ -124,7 +124,7 @@
                     </div>
                 @else
                     <div class="table-responsive">
-                        <table class="custom-table mb-0">
+                        <table class="table custom-table mb-0" style="--bs-table-bg: transparent;">
                             <thead>
                                 <tr class="bg-light">
                                     <th>Nombre</th>
@@ -135,7 +135,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($patient->emergency_contacts as $contact)
-                                    <tr>
+                                    <tr @if ($contact->is_primary) class="table-info" @endif>
                                         <td class="fw-semibold">{{ $contact->name }}</td>
                                         <td>{{ $contact->relationship }}</td>
                                         <td>{{ $contact->phone_number }}</td>
