@@ -74,11 +74,11 @@ class CreatePsychologistRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'fullname.required' => 'El campo de nombre completo es obligatorio.',
-            'fullname.string' => 'El nombre completo debe ser una cadena de texto.',
-            'fullname.min' => 'El nombre completo debe tener al menos 5 caracteres.',
-            'fullname.max' => 'El nombre completo no puede tener más de 255 caracteres.',
-            'fullname.unique' => 'El nombre completo ya está en uso.',
+            'full_name.required' => 'El campo de nombre completo es obligatorio.',
+            'full_name.string' => 'El nombre completo debe ser una cadena de texto.',
+            'full_name.min' => 'El nombre completo debe tener al menos 5 caracteres.',
+            'full_name.max' => 'El nombre completo no puede tener más de 255 caracteres.',
+            'full_name.unique' => 'El nombre completo ya está en uso.',
 
             'name.required' => 'El campo de nombre de usuario es obligatorio.',
             'name.string' => 'El nombre de usuario debe ser una cadena de texto.',

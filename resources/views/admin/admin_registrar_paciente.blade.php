@@ -81,8 +81,8 @@
                 <div class="col-md-6">
                     <label for="password" class="custom-label">Contraseña</label>
                     <input id="password" type="text" class="form-control form-control-custom"
-                        placeholder="Contraseña para inicio de sesión" name="password" required maxlength="255"
-                        value="" />
+                        placeholder="Contraseña para inicio de sesión" name="password" required minlength="8"
+                        maxlength="255" value="" />
                     <div class="valid-feedback" id="password_valid_feedback">
                         Contraseña válida.
                     </div>
@@ -94,8 +94,8 @@
                 <div class="col-md-6">
                     <label for="confirm_password" class="custom-label">Confirmar Contraseña</label>
                     <input id="confirm_password" type="text" class="form-control form-control-custom"
-                        placeholder="Confirma tu contraseña" name="confirm_password" required maxlength="255"
-                        value="" />
+                        placeholder="Confirma tu contraseña" name="confirm_password" required minlength="8"
+                        maxlength="255" value="" />
                     <div class="valid-feedback" id="confirm_password_valid_feedback">
                         Contraseña válida.
                     </div>
@@ -106,7 +106,7 @@
 
                 <div class="col-md-6">
                     <label for="curp" class="custom-label">CURP</label>
-                    <input id="curp" type="text" class="form-control form-control-custom"
+                    <input id="curp" type="text" class="form-control form-control-custom text-uppercase"
                         placeholder="Clave Única de Registro de Población" name="curp" required maxlength="18"
                         minlength="18" value="{{ old('curp', '') }}" />
                     <div class="invalid-feedback">
@@ -158,12 +158,105 @@
                 </button>
             </div>
             <p class="text-secondary small mb-3">Se recomienda por lo menos agregar uno.</p>
+
+            @php
+                $contacts = old('emergency_contacts', []);
+                if (is_string($contacts)) {
+                    $contacts = json_decode($contacts, true) ?? [];
+                }
+            @endphp
+
+            @if (!empty($contacts) && is_array($contacts))
+                @foreach ($contacts as $contact)
+                    <form
+                        class="emergency-contact-block needs-validation d-flex justify-content-between gap-3 align-items-center"
+                        novalidate autocomplete="off" id="emergencyContactForm_{{ $contact['id'] }}" action=""
+                        method="post" enctype="application/x-www-form-urlencoded">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-6">
+                                <label for="nameEmergencyContact_{{ $contact['id'] }}"
+                                    class="form-label custom-label">Nombre y
+                                    apellidos</label>
+                                <input type="text" class="form-control form-control-custom"
+                                    id="nameEmergencyContact_{{ $contact['id'] }}"
+                                    name="nameEmergencyContact_{{ $contact['id'] }}"
+                                    placeholder="Ingresa el nombre completo" required minlength="5" maxlength="255"
+                                    value="{{ $contact['name'] }}" />
+                                <div class="invalid-feedback">
+                                    Ingresa un nombre completo válido.
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="relationshipEmergencyContact_{{ $contact['id'] }}"
+                                    class="form-label">Parentesco</label>
+                                <select class="form-select text-secondary"
+                                    id="relationshipEmergencyContact_{{ $contact['id'] }}"
+                                    name="relationshipEmergencyContact_{{ $contact['id'] }}" required>
+                                    <option value="">Selecciona un parentesco...</option>
+                                    <option value="padre" @selected($contact['relationship'] === 'padre')>Padre</option>
+                                    <option value="madre" @selected($contact['relationship'] === 'madre')>Madre</option>
+                                    <option value="hermano(a)" @selected($contact['relationship'] === 'hermano(a)')>Hermano/a</option>
+                                    <option value="tio(a)" @selected($contact['relationship'] === 'tio(a)')>Tio/a</option>
+                                    <option value="primo(a)" @selected($contact['relationship'] === 'primo(a)')>Primo/a</option>
+                                    <option value="amigo(a)" @selected($contact['relationship'] === 'amigo(a)')>Amigo/a</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Selecciona un parentesco válido.
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="emailEmergencyContact_{{ $contact['id'] }}" class="form-label">Correo
+                                    Electrónico</label>
+                                <input type="email" class="form-control form-control-custom"
+                                    id="emailEmergencyContact_{{ $contact['id'] }}"
+                                    name="emailEmergencyContact_{{ $contact['id'] }}" placeholder="example@domain.com"
+                                    maxlength="255" value="{{ $contact['email'] }}" />
+                                <div class="invalid-feedback">
+                                    Ingresa un correo electrónico válido.
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="phone_numberEmergencyContact_{{ $contact['id'] }}"
+                                    class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control form-control-custom"
+                                    id="phone_numberEmergencyContact_{{ $contact['id'] }}"
+                                    name="phone_numberEmergencyContact_{{ $contact['id'] }}"
+                                    placeholder="10 a 12 dígitos numéricos" required minlength="10" maxlength="12"
+                                    pattern="^[0-9]{10,12}$" value="{{ $contact['phone_number'] }}" />
+                                <div class="invalid-feedback">
+                                    Ingresa un número de teléfono válido.
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-3 form-check text-start mb-4 ms-2">
+                                <label class="form-check-label" for="is_primary_{{ $contact['id'] }}"
+                                    style="color: #475569; font-size: 0.85rem;">
+                                    Este contacto es el principal para emergencias
+                                </label>
+                                <input class="form-check-input" type="checkbox" value="is-primary"
+                                    id="is_primary_{{ $contact['id'] }}" @checked($contact['is_primary']) />
+                                <div class="invalid-feedback">
+                                    Selecciona si el contacto es el principal para emergencias.
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="removeEmergencyContact({{ $contact['id'] }})" type="button"
+                            class="btn-remove-contact" title="Eliminar contacto">
+                            <i class="bi bi-x-circle-fill"></i>
+                        </button>
+                    </form>
+                @endforeach
+            @endif
         </div>
 
         <!-- Botones de Acción -->
         <div class="form-actions border-top border-secondary-subtle pt-4 mt-0">
             <button onclick="patientCreateOrUpdateFormSubmit('{{ route('store_patient') }}')" id="submit"
-                type="submit" class="btn btn-custom-red px-4 py-2 rounded-3 shadow-sm" value="Registrar Paciente">
+                type="button" class="btn btn-custom-red px-4 py-2 rounded-3 shadow-sm" value="Registrar Paciente">
                 Registrar Paciente
             </button>
         </div>

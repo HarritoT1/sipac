@@ -22,12 +22,15 @@
             <p class="text-secondary small mb-0">Actualiza los campos de interés del paciente en SIPAC.</p>
         </div>
 
-        <form id="actForm" action="" method="post" enctype="multipart/form-data" novalidate autocomplete="off"
-            class="needs-validation">
+        <form id="actForm" action="{{ route('update_patient', ['patient' => $patient->id]) }}" method="post"
+            enctype="multipart/form-data" novalidate autocomplete="off" class="needs-validation">
             @csrf
             @method('PUT')
+
+            <input id="user_id" type="hidden" name="user_id" value="{{ $patient->user->id }}" />
+
             <div class="profile-section gap-4 mb-4 pb-2">
-                <img id="avatar_preview" src="{{ asset('img/default-avatar.png') }}" alt="Avatar Psicólogo"
+                <img id="avatar_preview" src="{{ asset('storage/' . $patient->user->avatar_url) }}" alt="Avatar Psicólogo"
                     class="profile-avatar shadow-sm image-responsive mx-0" />
                 <div class="d-flex flex-column gap-2 align-items-start">
                     <input onchange="previewImage(event, 'avatar_preview')" type="file"
@@ -35,8 +38,11 @@
                         name="avatar_url" value="" />
                     <span class="text-secondary small" style="font-size: 0.75rem;">Formatos aceptados: PNG, JPG. Máximo
                         2MB.</span>
-                    <button type="button" onclick="deleteAvatar('8')" class="btn-avatar-delete">Eliminar
-                        Avatar</button>
+                    @if ($patient->user->avatar_url != 'UploadFiles/default-avatar.png')
+                        <button type="button" onclick="deleteAvatar('{{ $patient->user->id }}')"
+                            class="btn-avatar-delete">Eliminar
+                            Avatar</button>
+                    @endif
                 </div>
             </div>
 
@@ -44,7 +50,8 @@
                 <div class="col-md-6">
                     <label for="full_name" class="custom-label">Nombre y apellidos</label>
                     <input id="full_name" type="text" class="form-control form-control-custom"
-                        placeholder="Ingrese el nombre completo" name="full_name" required maxlength="255" value="" />
+                        placeholder="Ingrese el nombre completo" name="full_name" required maxlength="255" minlength="5"
+                        value="{{ $patient->user->full_name }}" />
                     <div class="invalid-feedback">
                         Ingresa un nombre completo válido.
                     </div>
@@ -53,8 +60,8 @@
                 <div class="col-md-6">
                     <label for="name" class="custom-label">Nombre de usuario (recuerda guardarlo)</label>
                     <input id="name" type="text" class="form-control form-control-custom"
-                        placeholder="Usuario para inicio de sesión" name="name" required maxlength="255"
-                        value="" />
+                        placeholder="Usuario para inicio de sesión" name="name" required maxlength="255" minlength="5"
+                        value="{{ $patient->user->name }}" />
                     <div class="invalid-feedback">
                         Ingresa un nombre de usuario válido.
                     </div>
@@ -63,7 +70,8 @@
                 <div class="col-md-6">
                     <label for="phone_number" class="custom-label">Teléfono</label>
                     <input id="phone_number" type="tel" class="form-control form-control-custom"
-                        placeholder="10 dígitos numéricos" name="phone_number" required maxlength="20" value="" />
+                        placeholder="10 dígitos numéricos" name="phone_number" required maxlength="12" minlength="10"
+                        pattern="^[0-9]{10,12}$" value="{{ $patient->user->phone_number }}" />
                     <div class="invalid-feedback">
                         Ingresa un número de teléfono válido.
                     </div>
@@ -71,9 +79,9 @@
 
                 <div class="col-md-6">
                     <label for="is_active" class="custom-label">Activo en el sistema</label>
-                    <select class="form-control form-select text-secondary" id="is_active" name="is_active" required>
-                        <option value="true" @selected(true)>Si</option>
-                        <option value="false" @selected(false)>No</option>
+                    <select class="form-control form-select text-dark" id="is_active" name="is_active" required>
+                        <option value="1" @selected($patient->user->is_active)>Si</option>
+                        <option value="0" @selected(!$patient->user->is_active)>No</option>
                     </select>
                     <div class="invalid-feedback">
                         Selecciona si el paciente está activo en el sistema.
@@ -82,9 +90,9 @@
 
                 <div class="col-md-6">
                     <label for="curp" class="custom-label">CURP</label>
-                    <input id="curp" type="text" class="form-control form-control-custom"
+                    <input id="curp" type="text" class="form-control form-control-custom text-uppercase"
                         placeholder="Clave Única de Registro de Población" name="curp" required maxlength="18"
-                        minlength="18" value="" />
+                        minlength="18" value="{{ $patient->user->curp }}" />
                     <div class="invalid-feedback">
                         Ingresa un CURP válido.
                     </div>
@@ -94,7 +102,7 @@
                     <label for="home_address" class="custom-label">Domicilio</label>
                     <input id="home_address" type="text" class="form-control form-control-custom"
                         placeholder="Calle, número, colonia, alcaldía o municipio" name="home_address" required
-                        value="" />
+                        minlength="5" maxlength="5000" value="{{ $patient->user->home_address }}" />
                     <div class="invalid-feedback">
                         Ingresa un domicilio válido.
                     </div>
@@ -103,7 +111,8 @@
                 <div class="col-md-6">
                     <label for="birth_date" class="custom-label">Fecha de cumpleaños</label>
                     <input id="birth_date" type="date" name="birth_date"
-                        class="form-control form-control-custom text-secondary" required value="" />
+                        class="form-control form-control-custom text-dark" required
+                        value="{{ $patient->birth_date->format('Y-m-d') }}" />
                     <div class="invalid-feedback">
                         Selecciona la fecha de nacimiento.
                     </div>
@@ -111,11 +120,11 @@
 
                 <div class="col-md-6">
                     <label for="gender" class="custom-label">Género</label>
-                    <select class="form-control form-select text-secondary" id="gender" name="gender" required>
-                        <option value="masculino" @selected('masculino' == 'masculino')>Masculino</option>
-                        <option value="femenino" @selected('femenino' == 'femenino')>Femenino</option>
-                        <option value="no binario" @selected('no binario' == 'no binario')>No binario</option>
-                        <option value="prefiero no decir" @selected('prefiero no decir' == 'prefiero no decir')>Prefiero no decir</option>
+                    <select class="form-control form-select text-dark" id="gender" name="gender" required>
+                        <option value="masculino" @selected($patient->gender == 'masculino')>Masculino</option>
+                        <option value="femenino" @selected($patient->gender == 'femenino')>Femenino</option>
+                        <option value="no binario" @selected($patient->gender == 'no binario')>No binario</option>
+                        <option value="prefiero no decir" @selected($patient->gender == 'prefiero no decir')>Prefiero no decir</option>
                     </select>
                     <div class="invalid-feedback">Selecciona el género.</div>
                 </div>
@@ -133,89 +142,111 @@
             </div>
             <p class="text-secondary small mb-3">Se recomienda por lo menos agregar uno.</p>
 
-            <form
-                class="emergency-contact-block needs-validation d-flex justify-content-between gap-3 align-items-center existing"
-                novalidate="" autocomplete="off" id="emergencyContactForm_{{ 8 }}" action=""
-                method="post" enctype="application/x-www-form-urlencoded">
-                <div class="row g-3 align-items-center">
-                    <div class="col-md-6">
-                        <label for="nameEmergencyContact_{{ 8 }}" class="form-label custom-label">Nombre y
-                            apellidos</label>
-                        <input type="text" class="form-control form-control-custom"
-                            id="nameEmergencyContact_{{ 8 }}" name="nameEmergencyContact_{{ 8 }}"
-                            placeholder="Ingresa el nombre completo" required maxlength="255"
-                            value="{{ 'Juan Pérez' }}">
-                        <div class="invalid-feedback">
-                            Ingresa un nombre completo válido.
+            @if (!$patient->emergency_contacts->isEmpty())
+                @foreach ($patient->emergency_contacts as $contact)
+                    <form
+                        class="emergency-contact-block needs-validation d-flex justify-content-between gap-3 align-items-center existing"
+                        novalidate autocomplete="off" id="emergencyContactForm_{{ $contact->id }}" action=""
+                        method="post" enctype="application/x-www-form-urlencoded">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-6">
+                                <label for="nameEmergencyContact_{{ $contact->id }}"
+                                    class="form-label custom-label">Nombre
+                                    y
+                                    apellidos</label>
+                                <input type="text" class="form-control form-control-custom"
+                                    id="nameEmergencyContact_{{ $contact->id }}"
+                                    name="nameEmergencyContact_{{ $contact->id }}"
+                                    placeholder="Ingresa el nombre completo" required minlength="5" maxlength="255"
+                                    value="{{ $contact->name }}" />
+                                <div class="invalid-feedback">
+                                    Ingresa un nombre completo válido.
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="relationshipEmergencyContact_{{ $contact->id }}"
+                                    class="form-label">Parentesco</label>
+                                <select class="form-select text-secondary"
+                                    id="relationshipEmergencyContact_{{ $contact->id }}"
+                                    name="relationshipEmergencyContact_{{ $contact->id }}" required>
+                                    <option value="">Selecciona un parentesco...</option>
+                                    <option value="padre" @selected($contact->relationship === 'padre')>Padre</option>
+                                    <option value="madre" @selected($contact->relationship === 'madre')>Madre</option>
+                                    <option value="hermano(a)" @selected($contact->relationship === 'hermano(a)')>Hermano/a</option>
+                                    <option value="tio(a)" @selected($contact->relationship === 'tio(a)')>Tio/a</option>
+                                    <option value="primo(a)" @selected($contact->relationship === 'primo(a)')>Primo/a</option>
+                                    <option value="amigo(a)" @selected($contact->relationship === 'amigo(a)')>Amigo/a</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Selecciona un parentesco válido.
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="emailEmergencyContact_{{ $contact->id }}" class="form-label">Correo
+                                    Electrónico</label>
+                                <input type="email" class="form-control form-control-custom"
+                                    id="emailEmergencyContact_{{ $contact->id }}"
+                                    name="emailEmergencyContact_{{ $contact->id }}" placeholder="example@domain.com"
+                                    maxlength="255" value="{{ $contact->email ?? '' }}" />
+                                <div class="invalid-feedback">
+                                    Ingresa un correo electrónico válido.
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="phone_numberEmergencyContact_{{ $contact->id }}"
+                                    class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control form-control-custom"
+                                    id="phone_numberEmergencyContact_{{ $contact->id }}"
+                                    name="phone_numberEmergencyContact_{{ $contact->id }}"
+                                    placeholder="10 a 12 dígitos numéricos" required minlength="10" maxlength="12"
+                                    pattern="^[0-9]{10,12}$" value="{{ $contact->phone_number }}" />
+                                <div class="invalid-feedback">
+                                    Ingresa un número de teléfono válido.
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-3 form-check text-start mb-4 ms-2">
+                                <label class="form-check-label" for="is_primary_{{ $contact->id }}"
+                                    style="color: #475569; font-size: 0.85rem;">
+                                    Este contacto es el principal para emergencias
+                                </label>
+                                <input class="form-check-input" type="checkbox" value="is-primary"
+                                    id="is_primary_{{ $contact->id }}" @checked($contact->is_primary) />
+                                <div class="invalid-feedback">
+                                    Selecciona si el contacto es el principal para emergencias.
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-6">
-                        <label for="relationshipEmergencyContact_{{ 8 }}"
-                            class="form-label">Parentesco</label>
-                        <select class="form-select text-secondary" id="relationshipEmergencyContact_{{ 8 }}"
-                            name="relationshipEmergencyContact_{{ 8 }}" required>
-                            <option value="padre" @selected('padre' == 'padre')>Padre</option>
-                            <option value="madre" @selected('madre' == 'madre')>Madre</option>
-                            <option value="hermano(a)" @selected('hermano(a)' == 'hermano(a)')>Hermano/a</option>
-                            <option value="tio(a)" @selected('tio(a)' == 'tio(a)')>Tio/a</option>
-                            <option value="primo(a)" @selected('primo(a)' == 'primo(a)')>Primo/a</option>
-                            <option value="amigo(a)" @selected('amigo(a)' == 'amigo(a)')>Amigo/a</option>
-                        </select>
-                        <div class="invalid-feedback">
-                            Selecciona un parentesco válido.
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="emailEmergencyContact_{{ 8 }}" class="form-label">Correo
-                            Electrónico</label>
-                        <input type="email" class="form-control form-control-custom"
-                            id="emailEmergencyContact_{{ 8 }}"
-                            name="emailEmergencyContact_{{ 8 }}" placeholder="example@domain.com"
-                            maxlength="255" value="{{ 'I6sY4@example.com' }}">
-                        <div class="invalid-feedback">
-                            Ingresa un correo electrónico válido.
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="phone_numberEmergencyContact_{{ 8 }}" class="form-label">Teléfono</label>
-                        <input type="tel" class="form-control form-control-custom"
-                            id="phone_numberEmergencyContact_{{ 8 }}"
-                            name="phone_numberEmergencyContact_{{ 8 }}" placeholder="10 dígitos numéricos"
-                            required maxlength="20" value="{{ 3355667788 }}">
-                        <div class="invalid-feedback">
-                            Ingresa un número de teléfono válido.
-                        </div>
-                    </div>
-
-                    <div class="col-12 mt-3 form-check text-start mb-4 ms-2">
-                        <label class="form-check-label" for="is_primary_{{ 8 }}"
-                            style="color: #475569; font-size: 0.85rem;">
-                            Este contacto es el principal para emergencias
-                        </label>
-                        <input class="form-check-input" type="checkbox" value="is-primary"
-                            id="is_primary_{{ 8 }}" @checked(true)>
-                    </div>
-                </div>
-
-                <button onclick="removeEmergencyContact(8)" type="button" class="btn-remove-contact"
-                    title="Eliminar contacto">
-                    <i class="bi bi-x-circle-fill"></i>
-                </button>
-            </form>
+                        <button onclick="removeEmergencyContact({{ $contact->id }})" type="button"
+                            class="btn-remove-contact" title="Eliminar contacto">
+                            <i class="bi bi-x-circle-fill"></i>
+                        </button>
+                    </form>
+                @endforeach
+            @endif
         </div>
 
         <!-- Botones de Acción -->
         <div class="form-actions border-top border-secondary-subtle pt-4 mt-0">
-            <a href="{{ route('admin_detalle_usuario_paciente', ['id' => 8]) }}" target="_self" title="Cancelar"
-                class="btn btn-cancel">Cancelar</a>
-            <button onclick="patientCreateOrUpdateFormSubmit()" id="submit" type="submit"
-                class="btn btn-custom-red px-4 py-2 rounded-3 shadow-sm" value="Registrar Paciente">
+            <a href="{{ route('admin_detalle_usuario_paciente', ['patient' => $patient->id]) }}" target="_self"
+                title="Cancelar" class="btn btn-cancel">Cancelar</a>
+            <button
+                onclick="patientCreateOrUpdateFormSubmit('{{ route('update_patient', ['patient' => $patient->id]) }}')"
+                id="submit" type="button" class="btn btn-custom-red px-4 py-2 rounded-3 shadow-sm"
+                value="Registrar Paciente">
                 Guardar cambios
             </button>
         </div>
+
+        @if (session('message'))
+            <div class="alert alert-success mt-3" role="alert">
+                {{ session('message') }}
+            </div>
+        @endif
 
         @if ($errors->any())
             <div class="alert alert-danger mt-3" role="alert">

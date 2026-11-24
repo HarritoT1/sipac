@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Controllers\Helpers;
 
 class CreatePatientRequest extends FormRequest
 {
@@ -17,6 +18,20 @@ class CreatePatientRequest extends FormRequest
 
     protected function prepareForValidation()
     {
+        $emergency_contacts = json_decode($this->input('emergency_contacts'), true);
+
+        if (!is_array($emergency_contacts)) $emergency_contacts = [];
+
+        // Aplicar sanitización previa a cada contacto de emergencia.
+
+        foreach ($emergency_contacts as $index => $contact) {
+            $emergency_contacts[$index]['name'] = Helpers::emptyToNull($contact['name']);
+            $emergency_contacts[$index]['relationship'] = Helpers::emptyToNull($contact['relationship']);
+            $emergency_contacts[$index]['phone_number'] = Helpers::emptyToNull($contact['phone_number']);
+            $emergency_contacts[$index]['email'] = Helpers::emptyToNull($contact['email']);
+            $emergency_contacts[$index]['is_primary'] = boolval($contact['is_primary']);
+        }
+
         $this->merge([
             'full_name' => Helpers::emptyToNull($this->input('full_name')),
             'name' => Helpers::emptyToNull($this->input('name')),
@@ -24,12 +39,11 @@ class CreatePatientRequest extends FormRequest
             'phone_number' => Helpers::emptyToNull($this->input('phone_number')),
             'password' => Helpers::emptyToNull($this->input('password')),
             'confirm_password' => Helpers::emptyToNull($this->input('confirm_password')),
-            'professional_license' => Helpers::emptyToNull($this->input('professional_license')),
             'curp' => Helpers::emptyToNull($this->input('curp')),
             'home_address' => Helpers::emptyToNull($this->input('home_address')),
-            'years_experience' => Helpers::emptyToNull($this->input('years_experience')),
-            'consultation_fee' => Helpers::emptyToNull($this->input('consultation_fee')),
-            'professional_bio' => Helpers::emptyToNull($this->input('professional_bio')),
+            'birth_date' => Helpers::emptyToNull($this->input('birth_date')),
+            'gender' => Helpers::emptyToNull($this->input('gender')),
+            'emergency_contacts' => $emergency_contacts,
         ]);
     }
 
@@ -47,13 +61,6 @@ class CreatePatientRequest extends FormRequest
             'phone_number' => 'required|string|min:10|max:12|regex:/^\d{10,12}$/|unique:users,phone_number',
             'password' => 'required|string|min:8|max:255',
             'confirm_password' => 'required|string|min:8|max:255|same:password',
-            'specialty' => 'required|array|min:1|max:7',
-            'specialty.*' => [
-                'required',
-                'distinct',
-                'in:ansiedad,depresión,terapia de pareja,adolescentes,terapia familiar,duelo,adicciones'
-            ],
-            'professional_license' => 'required|string|min:5|max:15|unique:psychologists,professional_license',
             'curp' => [
                 'required',
                 'string',
@@ -61,9 +68,47 @@ class CreatePatientRequest extends FormRequest
                 'unique:users,curp'
             ],
             'home_address' => 'required|string|min:5|max:5000',
-            'years_experience' => 'required|integer|min:0|max:50',
-            'consultation_fee' => 'nullable|numeric|min:0|max:9999.99',
-            'professional_bio' => 'nullable|string|max:30000',
+            'birth_date' => ['required', 'string', 'date_format:Y-m-d', 'before:today'],
+            'gender' => ['required', 'string', 'in:masculino,femenino,no binario,prefiero no decir'],
+            'emergency_contacts' => [
+                'required',
+                'array',
+                'min:1',
+                function ($attribute, $value, $fail) {
+                    $primaries = collect($value)->where('is_primary', true)->count();
+                    if ($primaries !== 1) {
+                        $fail($attribute . ': Debe haber exactamente un contacto de emergencia principal.');
+                    }
+                },
+            ],
+            'emergency_contacts.*.name' => [
+                'required',
+                'string',
+                'min:5',
+                'max:255',
+            ],
+            'emergency_contacts.*.relationship' => [
+                'required',
+                'string',
+                'in:padre,madre,hermano(a),tio(a),primo(a),amigo(a)'
+            ],
+            'emergency_contacts.*.phone_number' => [
+                'required',
+                'string',
+                'min:10',
+                'max:12',
+                'regex:/^\d{10,12}$/',
+            ],
+            'emergency_contacts.*.email' => [
+                'nullable',
+                'string',
+                'email',
+                'max:255',
+            ],
+            'emergency_contacts.*.is_primary' => [
+                'required',
+                'boolean',
+            ],
             'avatar_url' => 'nullable|file|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
@@ -71,11 +116,11 @@ class CreatePatientRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'fullname.required' => 'El campo de nombre completo es obligatorio.',
-            'fullname.string' => 'El nombre completo debe ser una cadena de texto.',
-            'fullname.min' => 'El nombre completo debe tener al menos 5 caracteres.',
-            'fullname.max' => 'El nombre completo no puede tener más de 255 caracteres.',
-            'fullname.unique' => 'El nombre completo ya está en uso.',
+            'full_name.required' => 'El campo de nombre completo es obligatorio.',
+            'full_name.string' => 'El nombre completo debe ser una cadena de texto.',
+            'full_name.min' => 'El nombre completo debe tener al menos 5 caracteres.',
+            'full_name.max' => 'El nombre completo no puede tener más de 255 caracteres.',
+            'full_name.unique' => 'El nombre completo ya está en uso.',
 
             'name.required' => 'El campo de nombre de usuario es obligatorio.',
             'name.string' => 'El nombre de usuario debe ser una cadena de texto.',
@@ -107,20 +152,6 @@ class CreatePatientRequest extends FormRequest
             'confirm_password.max' => 'La confirmación de contraseña debe tener como máximo 255 caracteres.',
             'confirm_password.same' => 'La confirmación de contraseña debe ser igual a la contraseña.',
 
-            'specialty.required' => 'El campo de especialidades es obligatorio.',
-            'specialty.array' => 'El campo de especialidades debe ser una lista válida.',
-            'specialty.min' => 'Debes seleccionar al menos 1 especialidad.',
-            'specialty.max' => 'Puedes seleccionar como máximo 7 especialidades.',
-            'specialty.*.required' => 'La especialidad no puede estar vacía.',
-            'specialty.*.distinct' => 'No puedes repetir especialidades.',
-            'specialty.*.in' => 'La especialidad seleccionada (:input) no es válida.',
-
-            'professional_license.required' => 'El campo de cédula profesional es obligatorio.',
-            'professional_license.string' => 'La cédula profesional debe ser una cadena de texto.',
-            'professional_license.min' => 'La cédula profesional debe tener al menos 5 caracteres.',
-            'professional_license.max' => 'La cédula profesional no puede tener más de 15 caracteres.',
-            'professional_license.unique' => 'La cédula profesional ya está registrada.',
-
             'curp.required' => 'El campo de CURP es obligatorio.',
             'curp.string' => 'El CURP debe ser una cadena de texto.',
             'curp.size' => 'El CURP debe tener exactamente 18 caracteres.',
@@ -131,17 +162,40 @@ class CreatePatientRequest extends FormRequest
             'home_address.min' => 'El domicilio debe tener al menos 5 caracteres.',
             'home_address.max' => 'El domicilio no puede tener más de 5000 caracteres.',
 
-            'years_experience.required' => 'Los años de experiencia son obligatorios.',
-            'years_experience.integer' => 'Los años de experiencia deben ser un número entero.',
-            'years_experience.min' => 'Los años de experiencia no pueden ser negativos.',
-            'years_experience.max' => 'Los años de experiencia no pueden superar los 50 años.',
+            'birth_date.required' => 'El campo de fecha de nacimiento es obligatorio.',
+            'birth_date.string' => 'La fecha de nacimiento debe ser una cadena de texto.',
+            'birth_date.date_format' => 'La fecha de nacimiento debe tener el formato YYYY-MM-DD.',
+            'birth_date.before' => 'La fecha de nacimiento debe ser anterior a la fecha actual.',
 
-            'consultation_fee.numeric' => 'El costo de consulta debe ser un número válido.',
-            'consultation_fee.min' => 'El costo de consulta no puede ser menor a 0.',
-            'consultation_fee.max' => 'El costo de consulta no puede superar los 9,999.99.',
+            'gender.required' => 'El campo de sexo es obligatorio.',
+            'gender.string' => 'El sexo debe ser una cadena de texto.',
+            'gender.in' => 'El sexo debe ser masculino, femenino, no binario o prefiero no decir.',
 
-            'professional_bio.string' => 'La biografía profesional debe ser una cadena de texto.',
-            'professional_bio.max' => 'La biografía profesional es demasiado larga.',
+            'emergency_contacts.required' => 'El campo de contactos de emergencia es obligatorio.',
+            'emergency_contacts.array' => 'El campo de contactos de emergencia debe ser un array.',
+            'emergency_contacts.min' => 'El campo de contactos de emergencia debe tener al menos un contacto.',
+
+            'emergency_contacts.*.name.required' => 'El campo de nombre del contacto de emergencia #:position es obligatorio.',
+            'emergency_contacts.*.name.string' => 'El nombre del contacto de emergencia #:position debe ser una cadena de texto.',
+            'emergency_contacts.*.name.min' => 'El nombre del contacto de emergencia #:position debe tener al menos 5 caracteres.',
+            'emergency_contacts.*.name.max' => 'El nombre del contacto de emergencia #:position no puede tener más de 255 caracteres.',
+
+            'emergency_contacts.*.relationship.required' => 'El campo de parentesco del contacto de emergencia #:position es obligatorio.',
+            'emergency_contacts.*.relationship.string' => 'El parentesco del contacto de emergencia #:position debe ser una cadena de texto.',
+            'emergency_contacts.*.relationship.in' => 'El parentesco seleccionado del contacto de emergencia #:position debe ser padre, madre, hermano(a), tio(a), primo(a) o amigo(a).',
+
+            'emergency_contacts.*.phone_number.required' => 'El campo de teléfono del contacto de emergencia #:position es obligatorio.',
+            'emergency_contacts.*.phone_number.string' => 'El teléfono del contacto de emergencia #:position debe ser una cadena de texto.',
+            'emergency_contacts.*.phone_number.min' => 'El teléfono del contacto de emergencia #:position debe tener al menos 10 dígitos.',
+            'emergency_contacts.*.phone_number.max' => 'El teléfono del contacto de emergencia #:position no puede tener más de 12 dígitos.',
+            'emergency_contacts.*.phone_number.regex' => 'El teléfono del contacto de emergencia #:position debe contener solo números (10 a 12 dígitos).',
+
+            'emergency_contacts.*.email.string' => 'El correo electrónico del contacto de emergencia #:position debe ser una cadena de texto.',
+            'emergency_contacts.*.email.email' => 'El correo electrónico del contacto de emergencia #:position debe ser una dirección válida.',
+            'emergency_contacts.*.email.max' => 'El correo electrónico del contacto de emergencia #:position no puede tener más de 255 caracteres.',
+
+            'emergency_contacts.*.is_primary.required' => 'Debes indicar si el contacto de emergencia #:position es principal o no.',
+            'emergency_contacts.*.is_primary.boolean' => 'El indicador de contacto principal del contacto de emergencia #:position debe ser verdadero o falso.',
 
             'avatar_url.file' => 'El avatar debe ser un archivo válido.',
             'avatar_url.image' => 'El avatar debe ser una imagen.',

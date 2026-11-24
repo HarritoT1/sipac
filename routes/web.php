@@ -34,9 +34,9 @@ Route::middleware(['auth'])->group(function () {
     /*PACIENTES*/
     Route::get('/admin-detalle-usuario-paciente/{patient}', [PatientController::class, 'show'])->name('admin_detalle_usuario_paciente')->where('patient', '[0-9]+');
 
-    Route::get('/admin-actualizar-paciente/{patient}', function ($id) {
-        return view('admin.admin_actualizar_paciente');
-    })->name('admin_actualizar_paciente')->where('patient', '[0-9]+');
+    Route::get('/admin-actualizar-paciente/{patient}', [PatientController::class, 'showUpdate'])->name('admin_actualizar_paciente')->where('patient', '[0-9]+');
+
+    Route::put('/update-patient/{patient}', [PatientController::class, 'update'])->name('update_patient')->where('patient', '[0-9]+');
     /*PACIENTES*/
 });
 
@@ -67,11 +67,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/admin-usuarios', [UserController::class, 'findAll'])->name('admin_usuarios');
 
+    /*PSICOLOGOS*/
     Route::get('/admin-registrar-psicologo', function () {
         return view('admin.admin_registrar_psicologo');
     })->name('admin_registrar_psicologo');
 
-    /*PSICOLOGOS*/
     Route::post('/store-psychologist', [PsychologistController::class, 'store'])->name('store_psychologist');
     /*PSICOLOGOS*/
 });
