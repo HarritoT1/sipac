@@ -55,6 +55,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin-registrar-paciente', function () {
         return view('admin.admin_registrar_paciente');
     })->name('admin_registrar_paciente');
+
+    Route::post('/store-patient', [PatientController::class, 'store'])->name('store_patient');
     /*PACIENTES*/
 });
 

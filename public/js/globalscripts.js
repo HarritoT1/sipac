@@ -133,7 +133,9 @@ const addEmergencyContact = () => {
                     <div class="col-md-6">
                         <label for="nameEmergencyContact_${id}" class="form-label custom-label">Nombre y apellidos</label>
                         <input type="text" class="form-control form-control-custom" id="nameEmergencyContact_${id}" name="nameEmergencyContact_${id}"
-                            placeholder="Ingresa el nombre completo" required maxlength="255" />
+                            placeholder="Ingresa el nombre completo" required 
+                            minlength="5"
+                            maxlength="255" />
                         <div class="invalid-feedback">
                             Ingresa un nombre completo válido.
                         </div>
@@ -167,8 +169,10 @@ const addEmergencyContact = () => {
                     <div class="col-md-6">
                         <label for="phone_numberEmergencyContact_${id}" class="form-label">Teléfono</label>
                         <input type="tel" class="form-control form-control-custom"
-                            id="phone_numberEmergencyContact_${id}" name="phone_numberEmergencyContact_${id}" placeholder="10 dígitos numéricos" required
-                            maxlength="20" />
+                            id="phone_numberEmergencyContact_${id}" name="phone_numberEmergencyContact_${id}" placeholder="10 a 12 dígitos numéricos" required
+                            minlength="10"
+                            maxlength="12"
+                            pattern="^[0-9]{10,12}$" />
                         <div class="invalid-feedback">
                             Ingresa un número de teléfono válido.
                         </div>
@@ -179,6 +183,9 @@ const addEmergencyContact = () => {
                             Este contacto es el principal para emergencias
                         </label>
                         <input class="form-check-input" type="checkbox" value="is-primary" id="is_primary_${id}" />
+                        <div class="invalid-feedback">
+                            Selecciona si el contacto es el principal para emergencias.
+                        </div>
                     </div>
                 </div>
 
@@ -196,7 +203,7 @@ const removeEmergencyContact = (id) => {
     }
 };
 
-function patientCreateOrUpdateFormSubmit() {
+function patientCreateOrUpdateFormSubmit(action) {
     const forms = document.querySelectorAll('.needs-validation')
 
     // Todo form deben pasar la validación de Bootstrap, si no, no se envía el formulario.
@@ -243,8 +250,8 @@ function patientCreateOrUpdateFormSubmit() {
 
     mainForm.append('emergency_contacts', JSON.stringify(emergencyContacts));
 
-    if (isCreateForm) submitFormData(mainForm, '', 'POST');
-    else submitFormData(mainForm, '', 'PUT');
+    if (isCreateForm) submitFormData(mainForm, action, 'POST');
+    else submitFormData(mainForm, action, 'PUT');
 
     return;
 }

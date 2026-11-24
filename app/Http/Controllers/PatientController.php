@@ -26,4 +26,10 @@ class PatientController extends Controller
         //dd($data);
         return view('admin.admin_detalle_usuario_paciente')->with($data)->with('status', Helpers::$status)->with('statusColors', Helpers::$statusColors);
     }
+
+    public function store(Request $request)
+    {
+        dd($request->all());
+        return;
+    }
 }

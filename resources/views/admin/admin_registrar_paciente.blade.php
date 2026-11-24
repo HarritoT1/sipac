@@ -22,8 +22,8 @@
             <p class="text-secondary small mb-0">Completa los campos obligatorios para dar de alta al paciente en SIPAC.</p>
         </div>
 
-        <form id="registerForm" action="" method="post" enctype="multipart/form-data" novalidate autocomplete="off"
-            class="needs-validation">
+        <form id="registerForm" action="{{ route('store_patient') }}" method="post" enctype="multipart/form-data"
+            novalidate autocomplete="off" class="needs-validation">
             @csrf
             <div class="profile-section gap-4 mb-4 pb-2">
                 <img id="avatar_preview" src="{{ asset('img/default-avatar.png') }}" alt="Avatar Psicólogo"
@@ -41,7 +41,7 @@
                 <div class="col-md-6">
                     <label for="full_name" class="custom-label">Nombre y apellidos</label>
                     <input id="full_name" type="text" class="form-control form-control-custom"
-                        placeholder="Ingrese el nombre completo" name="full_name" required maxlength="255"
+                        placeholder="Ingrese el nombre completo" name="full_name" required maxlength="255" minlength="5"
                         value="{{ old('full_name', '') }}" />
                     <div class="invalid-feedback">
                         Ingresa un nombre completo válido.
@@ -51,7 +51,7 @@
                 <div class="col-md-6">
                     <label for="name" class="custom-label">Nombre de usuario (recuerda guardarlo)</label>
                     <input id="name" type="text" class="form-control form-control-custom"
-                        placeholder="Usuario para inicio de sesión" name="name" required maxlength="255"
+                        placeholder="Usuario para inicio de sesión" name="name" required maxlength="255" minlength="5"
                         value="{{ old('name', '') }}" />
                     <div class="invalid-feedback">
                         Ingresa un nombre de usuario válido.
@@ -71,8 +71,8 @@
                 <div class="col-md-6">
                     <label for="phone_number" class="custom-label">Teléfono</label>
                     <input id="phone_number" type="tel" class="form-control form-control-custom"
-                        placeholder="10 dígitos numéricos" name="phone_number" required maxlength="20"
-                        value="{{ old('phone_number', '') }}" />
+                        placeholder="10 dígitos numéricos" name="phone_number" required maxlength="12" minlength="10"
+                        pattern="^[0-9]{10,12}$" value="{{ old('phone_number', '') }}" />
                     <div class="invalid-feedback">
                         Ingresa un número de teléfono válido.
                     </div>
@@ -118,7 +118,7 @@
                     <label for="home_address" class="custom-label">Domicilio</label>
                     <input id="home_address" type="text" class="form-control form-control-custom"
                         placeholder="Calle, número, colonia, alcaldía o municipio" name="home_address" required
-                        value="{{ old('home_address', '') }}" />
+                        minlength="5" maxlength="5000" value="{{ old('home_address', '') }}" />
                     <div class="invalid-feedback">
                         Ingresa un domicilio válido.
                     </div>
@@ -162,8 +162,8 @@
 
         <!-- Botones de Acción -->
         <div class="form-actions border-top border-secondary-subtle pt-4 mt-0">
-            <button onclick="patientCreateOrUpdateFormSubmit()" id="submit" type="submit"
-                class="btn btn-custom-red px-4 py-2 rounded-3 shadow-sm" value="Registrar Paciente">
+            <button onclick="patientCreateOrUpdateFormSubmit('{{ route('store_patient') }}')" id="submit"
+                type="submit" class="btn btn-custom-red px-4 py-2 rounded-3 shadow-sm" value="Registrar Paciente">
                 Registrar Paciente
             </button>
         </div>

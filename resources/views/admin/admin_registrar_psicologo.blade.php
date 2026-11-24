@@ -73,7 +73,7 @@
                     <label for="phone_number" class="custom-label">Teléfono</label>
                     <input id="phone_number" type="tel" class="form-control form-control-custom"
                         placeholder="10 dígitos numéricos" name="phone_number" required maxlength="12" minlength="10"
-                        value="{{ old('phone_number', '') }}" />
+                        pattern="^[0-9]{10,12}$" value="{{ old('phone_number', '') }}" />
                     <div class="invalid-feedback">
                         Ingresa un número de teléfono válido.
                     </div>
