@@ -115,7 +115,7 @@
 
             <!-- Olvidé mi contraseña -->
             <div class="mt-4">
-                <a href="{{ route('request_email') }}" class="fw-bold small"
+                <a href="{{ route('password.request') }}" class="fw-bold small"
                     style="color: #991B1B !important; text-decoration: none;">Olvidé
                     mi
                     contraseña</a>

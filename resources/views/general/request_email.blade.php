@@ -54,49 +54,65 @@
 
     <main class="form-signin w-100 m-auto text-center"
         style="background-color: #ffffff; padding: 2.5rem 2rem; border-radius: 12px; box-shadow: 0px 10px 30px rgba(0,0,0,0.3); max-width: 380px;">
-        <form id="recoveryPasswordForm" action="" method="post" enctype="application/x-www-form-urlencoded"
-            class="needs-validation" autocomplete="off" novalidate>
-            @csrf
-
-            <img class="mb-2" src="{{ asset('img/logo.png') }}" alt="SIPAC Logo" width="48" height="48" />
+        <img class="mb-2" src="{{ asset('img/logo.png') }}" alt="SIPAC Logo" width="48" height="48" />
 
 
-            <h1 class="h4 mb-1 fw-bold" style="color: var(--main-color);">SIPAC</h1>
-            <p class="mb-3" style="color: var(--text-gray); font-size: 0.85rem;">Sistema de Atención Psicológica
-                Comunitaria</p>
+        <h1 class="h4 mb-1 fw-bold" style="color: var(--main-color);">SIPAC</h1>
+        <p class="mb-3" style="color: var(--text-gray); font-size: 0.85rem;">Sistema de Atención Psicológica
+            Comunitaria</p>
 
 
-            <p class="mb-4 fw-semibold" style="color: #1e293b; font-size: 0.85rem; line-height: 1.3;">
-                Recuperación de contraseña,<br />
-                ingresa el email vinculado a tu cuenta
-            </p>
-
-
-            <div class="mb-4 text-start">
-                <label for="email" class="form-label fw-bold small"
-                    style="color: #1e293b; font-size: 0.8rem;">Email</label>
-                <input type="email" class="form-control" id="email" placeholder="user@gmail.com" required
-                    style="background-color: #f8fafc; border: 1px solid #e2e8f0; font-size: 0.9rem; padding: 0.6rem 0.75rem;"
-                    required maxlength="255" value="" />
-                <div class="invalid-feedback">
-                    Ingresa un email válido.
+        <p class="mb-4 fw-semibold" style="color: #1e293b; font-size: 0.85rem; line-height: 1.3;">
+            Recuperación de contraseña,<br />
+            ingresa el email vinculado a tu cuenta
+        </p>
+        @if (!session('message'))
+            <form id="recoveryPasswordForm" action="{{ route('password.email') }}" method="post"
+                enctype="application/x-www-form-urlencoded" class="needs-validation" autocomplete="off" novalidate>
+                @csrf
+                <div class="mb-4 text-start">
+                    <label for="email" class="form-label fw-bold small"
+                        style="color: #1e293b; font-size: 0.8rem;">Email</label>
+                    <input type="email" class="form-control" id="email" name="email"
+                        placeholder="user@gmail.com"
+                        style="background-color: #f8fafc; border: 1px solid #e2e8f0; font-size: 0.9rem; padding: 0.6rem 0.75rem;"
+                        required maxlength="255" value="{{ old('email') }}" />
+                    <div class="invalid-feedback">
+                        Ingresa un email válido.
+                    </div>
                 </div>
+
+
+                <button class="btn w-100 py-2 fw-bold" type="submit"
+                    style="background-color: var(--main-color); color: white;">
+                    Solicitar email de recuperación
+                </button>
+
+
+                <div class="mt-4">
+                    <a href="{{ route('login') }}" class="fw-bold small"
+                        style="color: var(--main-color); text-decoration: none;">
+                        Volver al inicio de sesión
+                    </a>
+                </div>
+            </form>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger mt-3" role="alert">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
+        @endif
 
-
-            <button class="btn w-100 py-2 fw-bold" type="submit"
-                style="background-color: var(--main-color); color: white;">
-                Solicitar email de recuperación
-            </button>
-
-
-            <div class="mt-4">
-                <a href="{{ route('login') }}" class="fw-bold small"
-                    style="color: var(--main-color); text-decoration: none;">
-                    Volver al inicio de sesión
-                </a>
+        @if (session('message'))
+            <div class="alert alert-success mt-3" role="alert">
+                {{ session('message') }}
             </div>
-        </form>
+        @endif
     </main>
 
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>

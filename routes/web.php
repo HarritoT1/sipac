@@ -7,6 +7,12 @@ use App\Http\Controllers\PsychologistController;
 use App\Http\Controllers\PatientController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
+use App\Http\Controllers\Helpers;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Auth\Events\PasswordReset;
 
 Route::get('/', function () {
     return view('login');
@@ -15,6 +21,96 @@ Route::get('/', function () {
 Route::post('/', [UserController::class, 'authenticate'])->name('auth.login');
 
 Route::post('/logout', [UserController::class, 'disauthenticate'])->name('auth.logout')->middleware('auth');
+
+/**** PASSWORD RESET ****/
+Route::get('/forgot-password', function () {
+    return view('general.request_email');
+})->middleware('guest')->name('password.request');
+
+Route::post('/forgot-password', function (Request $request) {
+    $request->merge([
+        'email' => Helpers::emptyToNull($request->input('email')),
+    ]);
+
+    $request->validate(
+        ['email' => 'required|string|email|max:255|exists:users,email'],
+        [
+            'email.required' => 'El correo es requerido.',
+            'email.string' => 'El correo debe ser una cadena.',
+            'email.email' => 'El correo debe ser una dirección de correo válida.',
+            'email.max' => 'El correo debe tener máximo :max caracteres.',
+            'email.exists' => 'El correo no está registrado.',
+        ]
+    );
+
+    $status = Password::sendResetLink(
+        $request->only('email')
+    );
+
+    return $status === Password::ResetLinkSent
+        ? back()->with('message', 'Si su correo está registrado, hemos enviado un enlace para restablecer su contraseña!')
+        : back()->withErrors(['email' => 'Ha ocurrido un error, por favor intentelo más tarde.']);
+})->middleware('guest')->name('password.email');
+
+Route::get('/reset-password/{token}', function (string $token) {
+    return view('general.change_password', ['token' => $token]);
+})->middleware('guest')->name('password.reset');
+
+Route::put('/reset-password', function (Request $request) {
+    $request->merge([
+        'token' => Helpers::emptyToNull($request->input('token')),
+        'email' => Helpers::emptyToNull($request->input('email')),
+        'password' => Helpers::emptyToNull($request->input('password')),
+        'confirm_password' => Helpers::emptyToNull($request->input('confirm_password')),
+    ]);
+
+    $request->validate(
+        [
+            'token' => 'required|string',
+            'email' => 'required|string|email|max:255|exists:users,email',
+            'password' => 'required|string|min:8|max:255',
+            'confirm_password' => 'required|string|min:8|max:255|same:password',
+        ],
+        [
+            'token.required' => 'El token es requerido.',
+            'token.string' => 'El token debe ser una cadena.',
+
+            'email.required' => 'El correo es requerido.',
+            'email.string' => 'El correo debe ser una cadena.',
+            'email.email' => 'El correo debe ser una dirección de correo válida.',
+            'email.max' => 'El correo debe tener máximo :max caracteres.',
+            'email.exists' => 'El correo no está registrado.',
+
+            'password.required' => 'La contraseña es requerida.',
+            'password.string' => 'La contraseña debe ser una cadena.',
+            'password.min' => 'La contraseña debe tener al menos :min caracteres.',
+            'password.max' => 'La contraseña debe tener máximo :max caracteres.',
+
+            'confirm_password.required' => 'La confirmación de contraseña es requerida.',
+            'confirm_password.string' => 'La confirmación de contraseña debe ser una cadena.',
+            'confirm_password.min' => 'La confirmación de contraseña debe tener al menos :min caracteres.',
+            'confirm_password.max' => 'La confirmación de contraseña debe tener máximo :max caracteres.',
+            'confirm_password.same' => 'Las contraseñas no coinciden.',
+        ]
+    );
+
+    $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function (User $user, string $password) {
+            $user->forceFill([
+                'password' => Hash::make($password)
+            ])->setRememberToken(Str::random(60));
+
+            $user->save();
+
+            event(new PasswordReset($user));
+        }
+    );
+
+    return $status === Password::PasswordReset
+        ? redirect()->route('login')->with('message', 'Hemos restablecido tu contraseña! Puedes iniciar sesión.')
+        : redirect()->route('password.request')->withErrors(['email' => 'Ocurrió un error, por favor intentelo de nuevo.']);
+})->middleware('guest')->name('password.update');
 
 /**** VERIFICATION ****/
 Route::middleware(['auth'])->group(function () {
@@ -36,15 +132,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 /**** GENERAL USER ****/
-
-Route::get('/request-email', function () {
-    return view('general.request_email');
-})->name('request_email');
-
-Route::get('/change-password', function () {
-    return view('general.change_password');
-})->name('change_password');
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/delete-avatar/{user}', [UserController::class, 'deleteAvatar'])->where('user', '[0-9]+')->name('delete_avatar');
 

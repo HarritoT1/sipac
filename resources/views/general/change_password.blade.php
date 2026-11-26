@@ -48,10 +48,12 @@
 
     <main class="form-signin w-100 m-auto text-center"
         style="background-color: #ffffff; padding: 2.5rem 2rem; border-radius: 12px; box-shadow: 0px 10px 30px rgba(0,0,0,0.3); max-width: 400px;">
-        <form id="newPasswordForm" action="" method="post" enctype="application/x-www-form-urlencoded"
-            class="needs-validation" autocomplete="off" novalidate>
+        <form id="newPasswordForm" action="{{ route('password.update') }}" method="post"
+            enctype="application/x-www-form-urlencoded" class="needs-validation" autocomplete="off" novalidate>
             @csrf
             @method('PUT')
+            <input type="hidden" id="token" name="token" value="{{ $token }}">
+            <input type="hidden" id="email" name="email" value="{{ request('email', '') }}">
 
             <img class="mb-2" src="{{ asset('img/logo.PNG') }}" alt="SIPAC Logo" width="48" height="48" />
 
@@ -67,9 +69,9 @@
             <div class="mb-3 text-start">
                 <label for="password" class="form-label fw-bold small" style="color: #1e293b; font-size: 0.8rem;">Nueva
                     contraseña</label>
-                <input type="text" class="form-control" id="password" placeholder="............"
+                <input type="text" class="form-control" id="password" name="password" placeholder="............"
                     style="background-color: #f8fafc; border: 1px solid #e2e8f0; font-size: 0.9rem;" required
-                    maxlength="255" value="" />
+                    maxlength="255" min="8" value="" />
                 <div class="valid-feedback" id="password_valid_feedback">
                     Contraseña válida.
                 </div>
@@ -82,9 +84,10 @@
             <div class="mb-4 text-start">
                 <label for="confirm_password" class="form-label fw-bold small"
                     style="color: #1e293b; font-size: 0.8rem;">Confirma tu nueva contraseña</label>
-                <input type="text" class="form-control" id="confirm_password" placeholder="............"
+                <input type="text" class="form-control" id="confirm_password" name="confirm_password"
+                    placeholder="............"
                     style="background-color: #f8fafc; border: 1px solid #e2e8f0; font-size: 0.9rem;" required
-                    maxlength="255" value="" />
+                    maxlength="255" min="8" value="" />
                 <div class="valid-feedback" id="confirm_password_valid_feedback">
                     Contraseña válida.
                 </div>
@@ -98,6 +101,16 @@
                 Actualizar contraseña
             </button>
         </form>
+
+        @if ($errors->any())
+            <div class="alert alert-danger mt-3" role="alert">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
     </main>
 
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>

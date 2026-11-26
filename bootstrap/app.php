@@ -13,6 +13,18 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectGuestsTo(fn(Request $request) => route('login'));
+        //PENDIENTE 
+        $middleware->redirectUsersTo(fn(Request $request) => route('dashboard'));
+        //PENDIENTE
+        $appHost = parse_url(env('APP_URL', 'http://localhost:8000'), PHP_URL_HOST);
+        $appPort = parse_url(env('APP_URL', 'http://localhost:8000'), PHP_URL_PORT);
+        $trustedHost = $appPort ? "{$appHost}:{$appPort}" : $appHost;
+
+        $middleware->trustHosts([
+            $trustedHost,
+            '127.0.0.1:8000',
+            'localhost:8000',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
