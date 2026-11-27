@@ -21,6 +21,11 @@ class Helpers extends Controller
         'absent' => 'badge-inasistencia'
     ];
 
+    public static array $modality = [
+        'in_person' => 'Presencial',
+        'online' => 'Virtual',
+    ];
+
     public static function emptyToNull(string | null $cadena): string | null
     {
         return trim($cadena) === '' ? null : trim($cadena);

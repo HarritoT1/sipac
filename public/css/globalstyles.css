@@ -690,12 +690,12 @@ a {
   font-size: 0.82rem;
   font-weight: 600;
   text-decoration: none;
-  transition: color 0.2s;
+  transition: all color 0.2s;
 }
 
 .link-detail:hover {
   color: var(--main-color-hover);
-  text-decoration: underline;
+  text-decoration: underline !important;
 }
 
 .stat-card {

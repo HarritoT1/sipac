@@ -48,15 +48,7 @@ class UserController extends Controller
             // Regenera la sesión para evitar la fijación de sesión.
             $request->session()->regenerate();
 
-            if (Auth::user()->role->slug === 'administrator') {
-                return redirect()->route('admin_dashboard');
-            }
-
-            if (Auth::user()->role->slug === 'psychologist') {
-                return redirect()->route('psycho_dashboard');
-            }
-
-            return redirect()->route('change_password');
+            return redirect()->route('dashboard');
         }
 
         return back()->withErrors([

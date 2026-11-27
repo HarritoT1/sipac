@@ -41,7 +41,7 @@
       </svg>
 
       <header class="navbar navbar-light bg-white d-md-none border-bottom p-3">
-          <a href="{{ route('admin_dashboard') }}" class="brand-logo p-0 m-0 gap-3" style='height: 40px;'>
+          <a href="{{ route('dashboard') }}" class="brand-logo p-0 m-0 gap-3" style='height: 40px;'>
               <i class="bi bi-heart-pulse-fill d-block" style='transform: translateY(-2px);'></i> SIPAC
           </a>
           <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="offcanvas"
@@ -55,7 +55,7 @@
       <nav id="sidebarMenu" class="sidebar offcanvas-md offcanvas-start position-fixed bg-white"
           style="background-color: #ffffff !important;" tabindex="-1">
           <div class="offcanvas-header d-md-none pb-0 mb-3">
-              <a href="{{ route('admin_dashboard') }}" class="brand-logo p-0 m-0 gap-3" style='height: 40px;'>
+              <a href="{{ route('dashboard') }}" class="brand-logo p-0 m-0 gap-3" style='height: 40px;'>
                   <i class="bi bi-heart-pulse-fill d-block" style='transform: translateY(-2px);'></i> SIPAC
               </a>
               <button type="button" class="shadow-none bg-transparent ms-auto border-0" data-bs-dismiss="offcanvas"
@@ -64,13 +64,13 @@
               </button>
           </div>
 
-          <a href="{{ route('admin_dashboard') }}" class="brand-logo d-none d-md-flex gap-3" style='height: 40px;'>
+          <a href="{{ route('dashboard') }}" class="brand-logo d-none d-md-flex gap-3" style='height: 40px;'>
               <i class="bi bi-heart-pulse-fill d-block" style='transform: translateY(-2px);'></i> SIPAC
           </a>
 
           <ul class="nav flex-column mb-auto w-100">
               <li class="nav-item">
-                  <a class="nav-link" aria-current="page" href="{{ route('admin_dashboard') }}" target="_self"
+                  <a class="nav-link" aria-current="page" href="{{ route('dashboard') }}" target="_self"
                       title="Inicio">
                       <i class="bi bi-house"></i> Inicio
                   </a>

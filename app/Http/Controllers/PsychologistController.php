@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePsychologistRequest;
 use App\Http\Requests\UpdatePsychologistRequest;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 use App\Models\Psychologist;
 use App\Models\SessionRecord;
@@ -15,9 +16,47 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Helpers;
 
 class PsychologistController extends Controller
 {
+    public function index(Request $request)
+    {
+        $userAuth = Auth::user();
+        $userAuth->load('psychologist');
+
+        abort_if(!$userAuth->psychologist, 403, 'Acceso denegado.');
+
+        //Proxima cita respecto al momento actual.
+        $actualAppointment = Appointment::with('patient.user')->where('psychologist_id', $userAuth->psychologist->id)->where('scheduled_at', '>', now())->orderBy('scheduled_at', 'asc')->first();
+        $nextAppointment = null;
+        $beforeAppointment = null;
+
+        if (isset($actualAppointment)) {
+            $nextAppointment = Appointment::with('patient.user')->where('psychologist_id', $userAuth->psychologist->id)->where('scheduled_at', '>', $actualAppointment->scheduled_at)->orderBy('scheduled_at', 'asc')->first();
+        }
+
+        if (isset($actualAppointment)) {
+            $beforeAppointment = Appointment::with('patient.user')->where('psychologist_id', $userAuth->psychologist->id)->where('scheduled_at', '<', $actualAppointment->scheduled_at)->latest('scheduled_at')->first();
+        } else {
+            $beforeAppointment = Appointment::with('patient.user')->where('psychologist_id', $userAuth->psychologist->id)->latest('scheduled_at')->first();
+        }
+
+        $cancelledAppointments = Appointment::where('psychologist_id', $userAuth->psychologist->id)->where('status', 'cancelled')->count();
+        $completedAppointments = Appointment::where('psychologist_id', $userAuth->psychologist->id)->where('status', 'completed')->count();
+        $pendingAppointments = Appointment::where('psychologist_id', $userAuth->psychologist->id)->where('status', 'scheduled')->count();
+
+        $lastSession = SessionRecord::with('appointment.patient.user')->whereHas('appointment', function ($query) use ($userAuth) {
+            $query->where('psychologist_id', $userAuth->psychologist->id);
+        })->latest()->first();
+
+        $data = compact('userAuth', 'actualAppointment', 'nextAppointment', 'beforeAppointment', 'cancelledAppointments', 'completedAppointments', 'pendingAppointments', 'lastSession');
+
+        //dd($data);
+        return view('psychologist.psycho_dashboard', $data)->with('status', Helpers::$status)->with('statusColors', Helpers::$statusColors)->with('modality', Helpers::$modality);
+    }
+
     public function show(Psychologist $psychologist, Request $request)
     {
         $psychologist->load('user');
