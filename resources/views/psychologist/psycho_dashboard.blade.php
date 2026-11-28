@@ -7,7 +7,8 @@
     <!-- Encabezado superior -->
     <div class="top-header">
         <h1 class="h3 mb-0 fw-bold text-dark">Inicio</h1>
-        <a class="profile-section text-dark logout-link" href="{{ route('pendiente') }}" title="{{ $userAuth->name }}"
+        <a class="profile-section text-dark logout-link"
+            href="{{ route('admin_detalle_usuario_psicologo', $userAuth->psychologist->id) }}" title="{{ $userAuth->name }}"
             target="_self">
             <img src="{{ asset('storage/' . $userAuth->avatar_url) }}" alt="{{ $userAuth->name }}"
                 class="profile-avatar shadow-sm image-responsive" />
@@ -67,7 +68,7 @@
                         </div>
                     </div>
                 @else
-                    <div class="alert alert-info d-flex justify-content-center align-items-center gap-2 mb-0 p-4 h-100"
+                    <div class="alert alert-info d-flex justify-content-center align-items-center text-center gap-2 mb-0 p-4 h-100"
                         role="alert">
                         <i class="bi bi-info-circle-fill" style="transform: translate(-2px, -5px)"></i> No existen citas
                         previas.
@@ -105,7 +106,7 @@
                         </div>
                     </div>
                 @else
-                    <div class="alert alert-info d-flex justify-content-center align-items-center gap-2 mb-0 p-4 h-100"
+                    <div class="alert alert-info d-flex justify-content-center align-items-center text-center gap-2 mb-0 p-4 h-100"
                         role="alert">
                         <i class="bi bi-info-circle-fill" style="transform: translate(-2px, -5px)"></i> No tienes citas
                         programadas.
@@ -143,7 +144,7 @@
                         </div>
                     </div>
                 @else
-                    <div class="alert alert-info d-flex justify-content-center align-items-center mb-0 gap-2 p-4 h-100"
+                    <div class="alert alert-info d-flex justify-content-center align-items-center text-center mb-0 gap-2 p-4 h-100"
                         role="alert">
                         <i class="bi bi-info-circle-fill" style="transform: translate(-2px, -5px)"></i> No tienes citas
                         programadas posteriores a la actual.

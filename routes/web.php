@@ -137,10 +137,10 @@ Route::middleware(['auth'])->group(function () {
 /**** GENERAL USER ****/
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
-        $authUser = Auth::user();
-        $authUser->load(['role']);
+        $userAuth = Auth::user();
+        $userAuth->load(['role']);
 
-        switch ($authUser->role->slug) {
+        switch ($userAuth->role->slug) {
             case 'administrator':
                 return redirect()->route('admin_dashboard');
                 break;
@@ -174,6 +174,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 /**** PSYCHOLOGIST ****/
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/psycho-dashboard', [PsychologistController::class, 'index'])->name('psycho_dashboard');
+
+    Route::get('/psycho-pacientes', [PatientController::class, 'findAll'])->name('psycho_pacientes');
+
     Route::get('/pendiente', function () {
         return 'Pendiente';
     })->name('pendiente');
@@ -192,7 +195,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     /*PACIENTES*/
     Route::get('/admin-registrar-paciente', function () {
-        return view('admin.admin_registrar_paciente');
+        $userAuth = Auth::user();
+        $userAuth->load(['role', 'psychologist']);
+
+        $view = null;
+
+        // Decide que vista mostrar dependiendo del rol del usuario autenticado.
+        switch ($userAuth->role->slug) {
+            case 'administrator':
+                $view = 'admin.admin_registrar_paciente';
+                break;
+            case 'psychologist':
+                $view = 'psychologist.psycho_registrar_paciente';
+                break;
+            default:
+                abort(403, 'Acceso denegado.');
+                break;
+        }
+
+        return view($view)->with('userAuth', $userAuth);
     })->name('admin_registrar_paciente');
 
     Route::post('/store-patient', [PatientController::class, 'store'])->name('store_patient');

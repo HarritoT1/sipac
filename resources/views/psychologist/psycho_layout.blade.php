@@ -76,12 +76,13 @@
                   </a>
               </li>
               <li class="nav-item">
-                  <a class="nav-link" href="{{ route('pendiente') }}" target="_self" title="Pacientes">
+                  <a class="nav-link" href="{{ route('psycho_pacientes') }}" target="_self" title="Pacientes">
                       <i class="bi bi-people"></i> Pacientes
                   </a>
               </li>
               <li class="nav-item">
-                  <a class="nav-link" href="{{ route('pendiente') }}" target="_self" title="Registrar Paciente">
+                  <a class="nav-link" href="{{ route('admin_registrar_paciente') }}" target="_self"
+                      title="Registrar Paciente">
                       <i class="bi bi-person-add"></i> Registrar Paciente
                   </a>
               </li>
@@ -97,8 +98,9 @@
                   </a>
               </li>
               <li class="nav-item">
-                  <a class="nav-link" href="{{ route('pendiente') }}" target="_self"
-                      title="{{ Auth::user()->name }}">
+                  <a class="nav-link"
+                      href="{{ route('admin_detalle_usuario_psicologo', $userAuth->psychologist->id) }}"
+                      target="_self" title="{{ $userAuth->name }}">
                       <i class="bi bi-person"></i> Mi Perfil
                   </a>
               </li>

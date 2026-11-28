@@ -71,8 +71,29 @@ class PsychologistController extends Controller
 
         $data = compact('psychologist', 'number_appointments', 'number_sessions', 'specialities');
 
+        $userAuth = Auth::user();
+        $userAuth->load(['role', 'psychologist', 'patient']);
+
+        $view = null;
+
+        // Decide que vista mostrar dependiendo del rol del usuario autenticado.
+        switch ($userAuth->role->slug) {
+            case 'administrator':
+                $view = 'admin.admin_detalle_usuario_psicologo';
+                break;
+            case 'psychologist':
+                $view = 'psychologist.psycho_detalle_usuario_psicologo';
+                break;
+            case 'patient':
+                $view = 'patient.patient_detalle_usuario_psicologo';
+                break;
+            default:
+                abort(403, 'Acceso denegado.');
+                break;
+        }
+
         //dd($data);
-        return view('admin.admin_detalle_usuario_psicologo')->with($data);
+        return view($view)->with($data)->with('userAuth', $userAuth);
     }
 
     public function store(CreatePsychologistRequest $request)
@@ -142,7 +163,25 @@ class PsychologistController extends Controller
 
         $psychologist->specialty = explode(',', $psychologist->specialty);
 
-        return view('admin.admin_actualizar_psicologo')->with('psychologist', $psychologist);
+        $userAuth = Auth::user();
+        $userAuth->load(['role', 'psychologist']);
+
+        $view = null;
+
+        // Decide que vista mostrar dependiendo del rol del usuario autenticado.
+        switch ($userAuth->role->slug) {
+            case 'administrator':
+                $view = 'admin.admin_actualizar_psicologo';
+                break;
+            case 'psychologist':
+                $view = 'psychologist.psycho_actualizar_psicologo';
+                break;
+            default:
+                abort(403, 'Acceso denegado.');
+                break;
+        }
+
+        return view($view)->with('psychologist', $psychologist);
     }
 
     public function update(Psychologist $psychologist, UpdatePsychologistRequest $request)

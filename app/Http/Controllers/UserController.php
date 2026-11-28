@@ -128,7 +128,25 @@ class UserController extends Controller
             return redirect()->back()->withErrors('error', 'El usuario no pudo ser eliminado.');
         }
 
-        return redirect()->route('admin_usuarios')->with('message', 'El usuario fue eliminado exitosamente.');
+        $userAuth = Auth::user();
+        $userAuth->load('role');
+
+        $route = null;
+
+        // Decide que vista mostrar dependiendo del rol del usuario autenticado.
+        switch ($userAuth->role->slug) {
+            case 'administrator':
+                $route = 'admin_usuarios';
+                break;
+            case 'psychologist':
+                $route = 'psycho_pacientes';
+                break;
+            default:
+                abort(403, 'Acceso denegado.');
+                break;
+        }
+
+        return redirect()->route($route)->with('message', "El usuario {$user->full_name} fue eliminado exitosamente.");
     }
 
     public function deleteAvatar(User $user)

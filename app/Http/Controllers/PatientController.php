@@ -9,6 +9,7 @@ use App\Http\Requests\UpdatePatientRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\Role;
@@ -35,7 +36,29 @@ class PatientController extends Controller
         $data = compact('patient', 'number_appointments', 'lastAppointmentDate', 'lastFiveAppointments');
 
         //dd($data);
-        return view('admin.admin_detalle_usuario_paciente')->with($data)->with('status', Helpers::$status)->with('statusColors', Helpers::$statusColors);
+
+        $userAuth = Auth::user();
+        $userAuth->load(['role', 'psychologist', 'patient']);
+
+        $view = null;
+
+        // Decide que vista mostrar dependiendo del rol del usuario autenticado.
+        switch ($userAuth->role->slug) {
+            case 'administrator':
+                $view = 'admin.admin_detalle_usuario_paciente';
+                break;
+            case 'psychologist':
+                $view = 'psychologist.psycho_detalle_usuario_paciente';
+                break;
+            case 'patient':
+                $view = 'patient.patient_detalle_usuario_paciente';
+                break;
+            default:
+                abort(403, 'Acceso denegado.');
+                break;
+        }
+
+        return view($view)->with($data)->with('status', Helpers::$status)->with('statusColors', Helpers::$statusColors)->with('userAuth', $userAuth);
     }
 
     public function store(CreatePatientRequest $request)
@@ -114,7 +137,28 @@ class PatientController extends Controller
 
         abort_if(!$patient->user->is_visible, 403, 'Acceso denegado.');
 
-        return view('admin.admin_actualizar_paciente')->with('patient', $patient);
+        $userAuth = Auth::user();
+        $userAuth->load(['role', 'psychologist', 'patient']);
+
+        $view = null;
+
+        // Decide que vista mostrar dependiendo del rol del usuario autenticado.
+        switch ($userAuth->role->slug) {
+            case 'administrator':
+                $view = 'admin.admin_actualizar_paciente';
+                break;
+            case 'psychologist':
+                $view = 'psychologist.psycho_actualizar_paciente';
+                break;
+            case 'patient':
+                $view = 'patient.patient_actualizar_paciente';
+                break;
+            default:
+                abort(403, 'Acceso denegado.');
+                break;
+        }
+
+        return view($view)->with('patient', $patient)->with('userAuth', $userAuth);
     }
 
     public function update(Patient $patient, UpdatePatientRequest $request)
@@ -222,5 +266,55 @@ class PatientController extends Controller
         }
 
         return redirect()->route('admin_detalle_usuario_paciente', ['patient' => $patient->id])->with('message', 'Paciente actualizado correctamente.');
+    }
+
+    public function findAll(Request $request)
+    {
+        $userAuth = Auth::user();
+        $userAuth->load('psychologist');
+
+        abort_if(!$userAuth->psychologist, 403, 'Acceso denegado.');
+
+        // Sanitización previa.
+        $request->merge([
+            'nameOrEmail' => Helpers::emptyToNull($request->query('nameOrEmail')),
+            'is_active' => Helpers::emptyToNull($request->query('is_active')),
+            'page' => intval($request->query('page') ?? 1),
+        ]);
+
+        // Validación de los datos de entrada.
+        $data = $request->validate([
+            'nameOrEmail' => 'nullable|string|max:255',
+            'is_active' => 'nullable|boolean',
+            'page' => 'required|integer|min:1',
+        ], [
+            'nameOrEmail.string' => 'El nombre o email debe ser una cadena de texto.',
+            'nameOrEmail.max' => 'El nombre o email no puede tener más de 255 caracteres.',
+            'is_active.boolean' => 'El estado debe ser verdadero o falso.',
+            'page.required' => 'La página es obligatoria.',
+            'page.integer' => 'La página debe ser un entero.',
+            'page.min' => 'La página debe ser mayor o igual a 1.',
+        ]);
+
+        $limit = 6; // Registros por página.
+
+        $usersQuery = User::with(['patient'])->where('is_visible', true)->whereNotIn('rol_id', [1, 2]);
+
+        $usersQuery->when($data['nameOrEmail'], function ($query) use ($data) {
+            $query->where(function ($subQuery) use ($data) { // Todas las condiciones deben estar agrupadas por parentesis logicos.
+                $subQuery->where('full_name', 'like', '%' . $data['nameOrEmail'] . '%')
+                    ->orWhere('email', 'like', '%' . $data['nameOrEmail'] . '%');
+            });
+        })->when(!is_null($data['is_active']), function ($query) use ($data) {
+            $query->where('is_active', $data['is_active']);
+        });
+
+        // Paginando resultados, con limite de 6 resultados por página.
+
+        $users = $usersQuery->paginate(perPage: $limit);
+
+        //dd($users->items());
+
+        return view('psychologist.psycho_pacientes', compact('users', 'userAuth'));
     }
 }
