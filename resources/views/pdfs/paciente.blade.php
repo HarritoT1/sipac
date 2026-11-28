@@ -1,22 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
 
-@php
-    $obj = (object) [
-        'nombre' => 'Juan Pérez',
-        'curp' => 'PEPJ800101HDFRRL09',
-        'correo' => 'juan.perez@example.com',
-        'telefono' => '555-123-4567',
-        'direccion' => 'Calle Falsa 123, Ciudad de México',
-        'nacimiento' => '1980-01-01',
-        'genero' => 'Masculino',
-        'is_active' => 'Sí',
-    ];
-@endphp
-
 <head>
-    <meta charset="UTF-8">
-    <title>Cita</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="SIPAC - Sistema de Atención Psicológica Comunitaria" />
+    <meta name="author" content="Ing. Karina Sayuri Diaz Martinez" />
+    <link rel="icon" href="{{ public_path('img/logo_without_back.png') }}" />
+
+    <title>{{ config('app.name', 'SIPAC') }}</title>
 
     <style>
         @page {
@@ -208,18 +200,18 @@
         <table class="logo-table">
             <tr>
                 <td>
-                    <img src="{{ asset('img/cdmx.jpeg') }}" alt="Logo CDMX" class="logo">
+                    <img src="{{ public_path('img/cdmx.jpeg') }}" alt="Logo CDMX" class="logo">
                 </td>
                 <td>
-                    <img src="{{ asset('img/logo_tlahuac.svg') }}" alt="Logo Tláhuac" class="logo">
-                </td>
-                <td>
-                    <!-- Es preferible utilizar PNG si el SVG no se renderiza -->
-                    <img src="{{ asset('img/tlahuac.jpeg') }}" alt="Logo de la alcaldía" class="logo">
+                    <img src="{{ public_path('img/logo_tlahuac.svg') }}" alt="Logo Tláhuac" class="logo">
                 </td>
                 <td>
                     <!-- Es preferible utilizar PNG si el SVG no se renderiza -->
-                    <img src="{{ asset('img/2026.jpeg') }}" alt="Logo de la alcaldía" class="logo">
+                    <img src="{{ public_path('img/tlahuac.jpeg') }}" alt="Logo de la alcaldía" class="logo">
+                </td>
+                <td>
+                    <!-- Es preferible utilizar PNG si el SVG no se renderiza -->
+                    <img src="{{ public_path('img/2026.jpeg') }}" alt="Logo de la alcaldía" class="logo">
                 </td>
             </tr>
         </table>
@@ -235,45 +227,46 @@
             <td class="information">
                 <p>
                     <span class="field-label">Nombre del paciente:</span><br>
-                    {{ $obj->nombre }}
+                    {{ $patient->user->full_name }}
                 </p>
 
                 <p>
                     <span class="field-label">CURP:</span><br>
-                    {{ $obj->curp }}
+                    {{ $patient->user->curp }}
                 </p>
 
                 <p>
                     <span class="field-label">Correo electrónico:</span><br>
-                    {{ $obj->correo }}
+                    {{ $patient->user->email }}
                 </p>
 
                 <p>
                     <span class="field-label">Teléfono:</span><br>
-                    {{ $obj->telefono }}
+                    {{ $patient->user->phone_number }}
                 </p>
 
                 <p>
                     <span class="field-label">Dirección:</span><br>
-                    {{ $obj->direccion }}
+                    {{ $patient->user->home_address }}
                 </p>
 
                 <p>
                     <span class="field-label">Nacimiento:</span><br>
-                    {{ $obj->nacimiento }}
+                    {{ $patient->birth_date->locale('es')->isoFormat('D [de] MMMM [del] YYYY') }}
                 </p>
 
                 <p>
                     <span class="field-label">Género:</span><br>
-                    {{ $obj->genero }}
+                    {{ $patient->gender }}
                 </p>
             </td>
 
             <td class="profile">
-                <img src="perfil.jpg" alt="Fotografía del paciente" class="profile-image">
+                <img src="{{ storage_path('app/public/' . $patient->user->avatar_url) }}"
+                    alt="{{ $patient->user->full_name }}" class="profile-image">
 
-                <div class="tag tag-gold">
-                    Estado activo: {{ $obj->is_active }}
+                <div class="tag {{ $patient->user->is_active ? 'tag-gold' : 'tag-red' }}">
+                    Estado activo: {{ $patient->user->is_active ? 'SI' : 'NO' }}
                 </div>
 
             </td>
@@ -286,29 +279,31 @@
     <div class="notice">
         <div class="section-heading">Contactos de emergencia:</div>
 
-        <table class="logo-table borders">
-            <tr>
-                <th>Nombre</th>
-                <th>Relación</th>
-                <th>Teléfono</th>
-                <th>Correo electrónico</th>
-                <th>Es principal</th>
-            </tr>
-            <tr>
-                <td style="width: 20%; text-align: center;">Hugo Martínez</td>
-                <td style="width: 20%; text-align: center;">Padre</td>
-                <td style="width: 20%; text-align: center;">55-1234-5678</td>
-                <td style="width: 20%; text-align: center;">hugo.martinez@email.com</td>
-                <td style="width: 20%; text-align: center;">Sí</td>
-            </tr>
-            <tr>
-                <td style="width: 20%; text-align: center;">María López</td>
-                <td style="width: 20%; text-align: center;">Madre</td>
-                <td style="width: 20%; text-align: center;">55-8765-4321</td>
-                <td style="width: 20%; text-align: center;">maria.lopez@email.com</td>
-                <td style="width: 20%; text-align: center;">No</td>
-            </tr>
-        </table>
+        @if ($patient->emergency_contacts->isEmpty())
+            <div role="alert" style="text-align: center; font-weight: bold; font-size: 16px;">
+                Este paciente no tiene contactos de emergencia.
+            </div>
+        @else
+            <table class="logo-table borders">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Relación</th>
+                    <th>Teléfono</th>
+                    <th>Correo electrónico</th>
+                    <th>Es principal</th>
+                </tr>
+                @foreach ($patient->emergency_contacts as $contact)
+                    <tr>
+                        <td style="width: 20%; text-align: center;">{{ $contact->name }}</td>
+                        <td style="width: 20%; text-align: center;">{{ $contact->relationship }}</td>
+                        <td style="width: 20%; text-align: center;">{{ $contact->phone_number }}</td>
+                        <td style="width: 20%; text-align: center;">{{ $contact->email ?? 'Sin correo electrónico' }}
+                        </td>
+                        <td style="width: 20%; text-align: center;">{{ $contact->is_primary ? 'SI' : 'NO' }}</td>
+                    </tr>
+                @endforeach
+            </table>
+        @endif
     </div>
 
     <div class="separator"></div>
@@ -316,121 +311,47 @@
     <br>
     <h2>Historial de terapias (sesiones) de las citas:</h2>
 
-    <table class="logo-table borders" style="margin-bottom: 20px;">
-        <h2>Sesión #1</h2>
-        <tr>
-            <td style="width: 50%; text-align: justify;">
-                <div class="section-heading">Diagnóstico principal</div>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit, explicabo. At cumque mollitia, natus
-                nulla magnam deleniti, rem incidunt earum aliquid impedit nobis accusamus nostrum expedita. Aliquid quos
-                cupiditate eos! Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, accusantium?
-                Exercitationem nisi, quasi temporibus voluptate, hic architecto harum consectetur porro consequuntur
-                excepturi, aperiam numquam deleniti illo ullam laborum magni praesentium!
-            </td>
-            <td style="width: 50%; text-align: justify;">
-                <div class="section-heading">Historial clínico</div>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit, explicabo. At cumque mollitia, natus
-                nulla magnam deleniti, rem incidunt earum aliquid impedit nobis accusamus nostrum expedita. Aliquid quos
-                cupiditate eos! Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, accusantium?
-                Exercitationem nisi, quasi temporibus voluptate, hic architecto harum consectetur porro consequuntur
-                excepturi, aperiam numquam deleniti illo ullam laborum magni praesentium!
-            </td>
-        </tr>
-        <tr>
-            <td style="width: 50%; text-align: justify;">
-                <div class="section-heading">Tratamiento asignado</div>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit, explicabo. At cumque mollitia, natus
-                nulla magnam deleniti, rem incidunt earum aliquid impedit nobis accusamus nostrum expedita. Aliquid quos
-                cupiditate eos! Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, accusantium?
-                Exercitationem nisi, quasi temporibus voluptate, hic architecto harum consectetur porro consequuntur
-                excepturi, aperiam numquam deleniti illo ullam laborum magni praesentium!
-            </td>
-            <td style="width: 50%; text-align: justify;">
-                <div class="section-heading">Medicamentos incluídos en el tratamiento asignado</div>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit, explicabo. At cumque mollitia, natus
-                nulla magnam deleniti, rem incidunt earum aliquid impedit nobis accusamus nostrum expedita. Aliquid quos
-                cupiditate eos! Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, accusantium?
-                Exercitationem nisi, quasi temporibus voluptate, hic architecto harum consectetur porro consequuntur
-                excepturi, aperiam numquam deleniti illo ullam laborum magni praesentium!
-            </td>
-        </tr>
-        <tr>
-            <td style="width: 50%; text-align: justify;">
-                <div class="section-heading">Evaluación psicológica final</div>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit, explicabo. At cumque mollitia, natus
-                nulla magnam deleniti, rem incidunt earum aliquid impedit nobis accusamus nostrum expedita. Aliquid quos
-                cupiditate eos! Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, accusantium?
-                Exercitationem nisi, quasi temporibus voluptate, hic architecto harum consectetur porro consequuntur
-                excepturi, aperiam numquam deleniti illo ullam laborum magni praesentium!
-            </td>
-            <td style="width: 50%; text-align: justify; background-color: #f59f0b46;">
-                <div class="section-heading" style="color: #F59E0B;">Notas de la sesión</div>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit, explicabo. At cumque mollitia, natus
-                nulla magnam deleniti, rem incidunt earum aliquid impedit nobis accusamus nostrum expedita. Aliquid quos
-                cupiditate eos! Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, accusantium?
-                Exercitationem nisi, quasi temporibus voluptate, hic architecto harum consectetur porro consequuntur
-                excepturi, aperiam numquam deleniti illo ullam laborum magni praesentium!
-            </td>
-        </tr>
-    </table>
-
-    <table class="logo-table borders" style="margin-bottom: 20px;">
-        <h2>Sesión #2</h2>
-        <tr>
-            <td style="width: 50%; text-align: justify;">
-                <div class="section-heading">Diagnóstico principal</div>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit, explicabo. At cumque mollitia, natus
-                nulla magnam deleniti, rem incidunt earum aliquid impedit nobis accusamus nostrum expedita. Aliquid quos
-                cupiditate eos! Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, accusantium?
-                Exercitationem nisi, quasi temporibus voluptate, hic architecto harum consectetur porro consequuntur
-                excepturi, aperiam numquam deleniti illo ullam laborum magni praesentium!
-            </td>
-            <td style="width: 50%; text-align: justify;">
-                <div class="section-heading">Historial clínico</div>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit, explicabo. At cumque mollitia, natus
-                nulla magnam deleniti, rem incidunt earum aliquid impedit nobis accusamus nostrum expedita. Aliquid quos
-                cupiditate eos! Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, accusantium?
-                Exercitationem nisi, quasi temporibus voluptate, hic architecto harum consectetur porro consequuntur
-                excepturi, aperiam numquam deleniti illo ullam laborum magni praesentium!
-            </td>
-        </tr>
-        <tr>
-            <td style="width: 50%; text-align: justify;">
-                <div class="section-heading">Tratamiento asignado</div>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit, explicabo. At cumque mollitia, natus
-                nulla magnam deleniti, rem incidunt earum aliquid impedit nobis accusamus nostrum expedita. Aliquid quos
-                cupiditate eos! Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, accusantium?
-                Exercitationem nisi, quasi temporibus voluptate, hic architecto harum consectetur porro consequuntur
-                excepturi, aperiam numquam deleniti illo ullam laborum magni praesentium!
-            </td>
-            <td style="width: 50%; text-align: justify;">
-                <div class="section-heading">Medicamentos incluídos en el tratamiento asignado</div>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit, explicabo. At cumque mollitia, natus
-                nulla magnam deleniti, rem incidunt earum aliquid impedit nobis accusamus nostrum expedita. Aliquid quos
-                cupiditate eos! Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, accusantium?
-                Exercitationem nisi, quasi temporibus voluptate, hic architecto harum consectetur porro consequuntur
-                excepturi, aperiam numquam deleniti illo ullam laborum magni praesentium!
-            </td>
-        </tr>
-        <tr>
-            <td style="width: 50%; text-align: justify;">
-                <div class="section-heading">Evaluación psicológica final</div>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit, explicabo. At cumque mollitia, natus
-                nulla magnam deleniti, rem incidunt earum aliquid impedit nobis accusamus nostrum expedita. Aliquid quos
-                cupiditate eos! Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, accusantium?
-                Exercitationem nisi, quasi temporibus voluptate, hic architecto harum consectetur porro consequuntur
-                excepturi, aperiam numquam deleniti illo ullam laborum magni praesentium!
-            </td>
-            <td style="width: 50%; text-align: justify; background-color: #f59f0b46;">
-                <div class="section-heading" style="color: #F59E0B;">Notas de la sesión</div>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit, explicabo. At cumque mollitia, natus
-                nulla magnam deleniti, rem incidunt earum aliquid impedit nobis accusamus nostrum expedita. Aliquid quos
-                cupiditate eos! Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, accusantium?
-                Exercitationem nisi, quasi temporibus voluptate, hic architecto harum consectetur porro consequuntur
-                excepturi, aperiam numquam deleniti illo ullam laborum magni praesentium!
-            </td>
-        </tr>
-    </table>
+    @if ($patientSessionRecords->isEmpty())
+        <div role="alert" style="text-align: center; font-weight: bold; font-size: 16px;">
+            Este paciente no tiene sesiones de terapia registradas.
+        </div>
+    @else
+        @foreach ($patientSessionRecords as $index => $patientSessionRecord)
+            <table class="logo-table borders" style="margin-bottom: 20px;">
+                <h2>Sesión #{{ $index + 1 }}</h2>
+                <tr>
+                    <td style="width: 50%; text-align: justify;">
+                        <div class="section-heading">Diagnóstico principal</div>
+                        {{ $patientSessionRecord->diagnosis }}
+                    </td>
+                    <td style="width: 50%; text-align: justify;">
+                        <div class="section-heading">Historial clínico</div>
+                        {{ $patientSessionRecord->clinical_history ?? 'Sin historial clínico.' }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%; text-align: justify;">
+                        <div class="section-heading">Tratamiento asignado</div>
+                        {{ $patientSessionRecord->treatment ?? 'Sin tratamiento asignado.' }}
+                    </td>
+                    <td style="width: 50%; text-align: justify;">
+                        <div class="section-heading">Medicamentos incluídos en el tratamiento asignado</div>
+                        {{ $patientSessionRecord->medications ?? 'Sin medicamentos incluídos.' }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%; text-align: justify;">
+                        <div class="section-heading">Evaluación psicológica final</div>
+                        {{ $patientSessionRecord->psychological_evaluation }}
+                    </td>
+                    <td style="width: 50%; text-align: justify; background-color: #f59f0b46;">
+                        <div class="section-heading" style="color: #F59E0B;">Notas de la sesión</div>
+                        {{ $patientSessionRecord->therapy_notes ?? 'Sin notas de la sesión.' }}
+                    </td>
+                </tr>
+            </table>
+        @endforeach
+    @endif
 
     <div class="footer">
         Documento reporte del avance del paciente.

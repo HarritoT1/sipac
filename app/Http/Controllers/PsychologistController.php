@@ -181,7 +181,7 @@ class PsychologistController extends Controller
                 break;
         }
 
-        return view($view)->with('psychologist', $psychologist);
+        return view($view)->with('psychologist', $psychologist)->with('userAuth', $userAuth);
     }
 
     public function update(Psychologist $psychologist, UpdatePsychologistRequest $request)

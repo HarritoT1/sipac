@@ -4,16 +4,19 @@
         document.querySelector('a[title="Usuarios"]').classList.add('active');
     </script>
 
+    <!-- Encabezado superior -->
     <div class="top-header">
         <h1 class="h3 mb-0 fw-bold text-dark">Actualizar Psicólogo</h1>
-        <div class="profile-section">
-            <img src="https://ui-avatars.com/api/?name=Admin&background=random" alt="Avatar Administrador"
+        <a class="profile-section text-dark logout-link"
+            href="{{ route('admin_detalle_usuario_psicologo', $userAuth->psychologist->id) }}" title="{{ $userAuth->name }}"
+            target="_self">
+            <img src="{{ asset('storage/' . $userAuth->avatar_url) }}" alt="{{ $userAuth->name }}"
                 class="profile-avatar shadow-sm image-responsive" />
             <div class="d-flex flex-column lh-1">
-                <span class="fw-bold" style="font-size: 0.9rem;">Administrador</span>
-                <span class="text-secondary" style="font-size: 0.8rem;">Perfil</span>
+                <span class="fw-bold" style="font-size: 0.9rem;">{{ $userAuth->name }}</span>
+                <span class="text-secondary" style="font-size: 0.8rem;">Psicólog@</span>
             </div>
-        </div>
+        </a>
     </div>
 
     <div class="form-card-full p-4 p-md-5 mb-5">

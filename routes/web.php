@@ -177,13 +177,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/psycho-pacientes', [PatientController::class, 'findAll'])->name('psycho_pacientes');
 
+    Route::get('/reporte-paciente/{patient}', [PatientController::class, 'report'])->name('reporte_paciente')->where('patient', '[0-9]+');
+
     Route::get('/pendiente', function () {
         return 'Pendiente';
     })->name('pendiente');
 });
 
 /**** ADMIN AND PSYCHOLOGIST ****/
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/delete-account/{user}', [UserController::class, 'destroy'])->where('user', '[0-9]+')->name('delete_account');
 
@@ -221,7 +222,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 /**** ADMIN ****/
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin-dashboard', [AdminController::class, 'index'])->name('admin_dashboard');
 

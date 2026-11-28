@@ -13,9 +13,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\SessionRecord;
 use Illuminate\Support\Facades\Log;
 use App\Models\EmergencyContact;
 use Illuminate\Auth\Events\Registered;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PatientController extends Controller
 {
@@ -316,5 +318,23 @@ class PatientController extends Controller
         //dd($users->items());
 
         return view('psychologist.psycho_pacientes', compact('users', 'userAuth'));
+    }
+
+    public function report(Patient $patient, Request $request)
+    {
+        $patient->load(['user', 'emergency_contacts']);
+
+        abort_if(!$patient->user->is_visible, 403, 'Acceso denegado.');
+
+        $patientSessionRecords = SessionRecord::whereHas('appointment', function ($query) use ($patient) {
+            $query->where('patient_id', $patient->id);
+        })->oldest()->get();
+
+        $data = compact('patient', 'patientSessionRecords');
+
+        $pdf = Pdf::loadView('pdfs.paciente', $data);
+
+        // Para abrirlo en el navegador:
+        return $pdf->stream($patient->user->full_name . '.pdf');
     }
 }

@@ -51,7 +51,7 @@
                 </div>
 
                 <!-- Botones de Acción -->
-                <div class="mt-auto px-2 pb-2">
+                <div class="mt-auto px-2">
                     <a href="{{ route('admin_actualizar_psicologo', ['psychologist' => $psychologist->id]) }}"
                         title="Editar Perfil" target="_self" class="btn btn-outline-edit mb-3">
                         <i class="bi bi-pencil-square me-2"></i>Editar Perfil
